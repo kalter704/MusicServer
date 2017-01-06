@@ -5,11 +5,15 @@ from django.contrib.auth.models import User
 
 # Create your models here.
 
+
 class PlayList(models.Model):
 	title = models.CharField(max_length = 30)
 
 	def __unicode__(self):
-		return (str(self.id) + ' ' + self.text)
+		return (str(self.id) + ' ' + self.title)
+
+	def __str__(self):
+		return self.title
 
 
 class Song(models.Model):
@@ -18,7 +22,8 @@ class Song(models.Model):
 		PlayList, 
 		on_delete = models.SET_NULL, 
 		blank = True,
-		null = True
+		null = True,
+		related_name = 'song'
 	)
 	title = models.CharField(max_length = 20)
 	#auto_now = True
@@ -28,3 +33,11 @@ class Song(models.Model):
 
 	def __unicode__(self):
 		return (str(self.id) + ' ' + self.title)
+
+	def __str__(self):
+		#return (self.title)
+		if (self.playList != None):
+			return (self.title + ' Album: ' + str(self.playList.title))
+		else:
+			return (self.title + ' Album: null')
+		
