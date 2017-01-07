@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block main %}
+	<div>
+		<div><a href="{% url 'show_albums' %}">Все альбомы</a></div>
+		<div class="" id="line">
+			<hr>
+		</div>
+		<div><a href="{% url 'add_album' %}">Добавить альбом</a></div>
+		<div><a href="{% url 'add_song' %}">Добавить песню</a></div>
+	</div>
+{% endblock %}

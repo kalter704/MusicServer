@@ -8,6 +8,18 @@ from wsgiref.util import FileWrapper
 from models import PlayList, Song
 
 def index(request):
+	return render(request, 'index.html')
+
+def show_albums(request):
+	return HttpResponse("Hello, world!!!")
+
+def show_songs(request, album_id):
+	return HttpResponse("Hello, world!!!")
+
+def add_album(request):
+	return HttpResponse("Hello, world!!!")
+
+def add_song(request):
 	return HttpResponse("Hello, world!!!")
 
 def getSongs(request):

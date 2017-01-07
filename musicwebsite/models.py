@@ -1,10 +1,9 @@
 from __future__ import unicode_literals
 
 from django.db import models
-from django.contrib.auth.models import User
+#from django.contrib.auth.models import User
 
 # Create your models here.
-
 
 class PlayList(models.Model):
 	title = models.CharField(max_length = 30)
@@ -40,4 +39,14 @@ class Song(models.Model):
 			return (self.title + ' Album: ' + str(self.playList.title))
 		else:
 			return (self.title + ' Album: null')
-		
+
+
+class UdpatePlayList(models.Model):
+	last_update = models.BigIntegerField()
+	playList = models.OneToOneField(PlayList, on_delete = models.CASCADE, related_name = 'update_playlist')
+
+	def __unicode__(self):
+		return (str(self.id) + '; ' + 'Album: ' + str(self.playList.title) + '; Last update: ' + str(self.last_update))
+
+	def __str__(self):
+		return (str(self.id) + '; ' + 'Album: ' + str(self.playList.title) + '; Last update: ' + str(self.last_update))
