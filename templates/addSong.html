@@ -1,0 +1,155 @@
+{% extends "base.html" %}
+
+{% block main %}
+	<div>
+		<h1>Добавление</h1>
+		{% if add_successful %}
+			<div id="succes_mess">
+				Плейлист успешно добавлен
+			</div>
+		{% else %}
+			{% if is_empty_field %}
+				<div id="error_mess">
+					Заполните все поля
+				</div>
+			{% endif %}
+		{% endif %}
+		<br>
+		<form action="{% url 'add_song' %}" method="post" enctype="multipart/form-data">
+			{% csrf_token %}
+			<div>
+				<label>{{ form.title.label }}</label> 
+				<div>{{ form.title }}</div>
+			</div>
+			<br>
+			<div>
+				<label>{{ form.playList.label }}</label> 
+				<div>{{ form.playList }}</div>
+			</div>
+			<br>
+			<!--
+			<div>
+				<label>{{ form.length.label }}</label> 
+				<div>{{ form.length }}</div>
+			</div>
+			<br>
+			-->
+			<div>
+				<label>{{ form.songFile.label }}</label> 
+				<div>{{ form.songFile }}</div>
+			</div>
+			<br>
+			<div>
+				<label>{{ form.albumImg.label }}</label> 
+				<div>{{ form.albumImg }}</div>
+			</div>
+			<br>
+			<div>
+				<button type="submit" class="btn" style="width: 220px;">Добавить</button>
+			</div>
+		</form>
+		<br><br>
+		<img id="img_prev_xxxhdpi" src="">
+		<img id="img_prev_xxhdpi" src="">
+		<img id="img_prev_xhdpi" src="">
+		<img id="img_prev_hdpi" src="">
+		<img id="img_prev_mdpi" src="">
+		<div>
+			<canvas height='300' width='300' id='example'>Обновите браузер</canvas>
+		</div>
+	</div>
+
+<script>
+	var MDPI_WIDTH = 48
+	var HDPI_WIDTH = MDPI_WIDTH * 1.5
+	var XHDPI_WIDTH = MDPI_WIDTH * 2
+	var XXHDPI_WIDTH = MDPI_WIDTH * 3
+	var XXXHDPI_WIDTH = MDPI_WIDTH * 4	
+
+	function checkSongURL(input) {
+
+	}
+
+	function checkImgURL(input) {
+		var type   = ['image/bmp','image/gif','image/jpg','image/jpeg','image/png'];
+		var width  = 192;
+		var height = 192;
+		var file   = input.files[0];
+		var img_prev_xxxhdpi = document.getElementById('img_prev_xxxhdpi');
+		var img_prev_xxhdpi  = document.getElementById('img_prev_xxhdpi');
+		var img_prev_xhdpi   = document.getElementById('img_prev_xhdpi');
+		var img_prev_hdpi    = document.getElementById('img_prev_hdpi');
+		var img_prev_mdpi    = document.getElementById('img_prev_mdpi');
+		function errMsg(x) {
+			alert('Error ' + x);
+			prev.src = '';
+			input.value = '';
+		}
+		if (type.indexOf(file.type) == -1) {
+			errMsg('Не правильный формат!');
+			return false;
+		} else {
+			var reader = new FileReader();
+			reader.readAsDataURL(file);
+			reader.onload = function(e) {
+				var img = new Image();
+				img.src = e.target.result;
+				img.onload = function() {
+					if (this.width >= width && this.height >= height) {
+						/*
+						img_prev_xxxhdpi.src = this.src;
+						img_prev_xxhdpi.src = this.src;
+						img_prev_xhdpi.src = this.src;
+						img_prev_hdpi.src = this.src;
+						img_prev_mdpi.src = this.src;
+						*/
+						/*
+						var width = prev2.width;
+						var height = prev2.height;
+						canvas.width = width / 3;
+						canvas.height = height / 3;
+						*/
+						//var ctx = canvas.getContext("2d");
+						//ctx.drawImage(this, 0, 0, width, height);
+
+						var example = document.getElementById("example");
+						var ctx = example.getContext('2d');
+
+						example.width = example.height = XXXHDPI_WIDTH;
+						ctx.drawImage(this, 0, 0, example.width, example.height);
+						var new_img = example.toDataURL("image/png");
+						img_prev_xxxhdpi.src = new_img;
+
+						example.width = example.height = XXHDPI_WIDTH;
+						ctx.drawImage(this, 0, 0, example.width, example.height);
+						var new_img = example.toDataURL("image/png");
+						img_prev_xxhdpi.src = new_img;
+
+						example.width = example.height = XHDPI_WIDTH;
+						ctx.drawImage(this, 0, 0, example.width, example.height);
+						var new_img = example.toDataURL("image/png");
+						img_prev_xhdpi.src = new_img;
+
+						example.width = example.height = HDPI_WIDTH;
+						ctx.drawImage(this, 0, 0, example.width, example.height);
+						var new_img = example.toDataURL("image/png");
+						img_prev_hdpi.src = new_img;
+
+						example.width = example.height = MDPI_WIDTH;
+						ctx.drawImage(this, 0, 0, example.width, example.height);
+						var new_img = example.toDataURL("image/png");
+						img_prev_mdpi.src = new_img;
+
+						ctx.clearRect(0, 0, example.width, example.height);
+
+						//document.getElementById('img_size_mess').style.color='black';
+					} else {
+						//document.getElementById('img_size_mess').style.color='red';
+						input.value = '';
+					}
+				};
+			};
+		}
+	}
+</script>
+{% endblock %}

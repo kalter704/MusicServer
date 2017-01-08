@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block main %}
+	<div>
+		<table>
+			<tr class="tableheader">
+				<th>id</th>
+				<th>Title</th>
+				<th>Last Update</th>
+				<th>Change</th>
+			</tr>
+			{% for playlist in playLists %}
+				<tr class="{% cycle '' 'dark_row' %}">
+					<th width="100px">
+						<a href="{% url 'show_songs' playlist.id %}">
+							{{ playlist.id }}
+						</a>
+					</th> 
+					<th width="300px">
+						<a href="{% url 'show_songs' playlist.id %}">
+							{{ playlist.title }}
+						</a>
+					</th> 
+					<th width="300px">
+						<a href="{% url 'show_songs' playlist.id %}">
+							{{ playlist.update_playlist.last_update }}
+						</a>
+					</th>
+					<th width="120px">
+						<a href="{% url 'change_playlist' playlist.id %}">
+							Change
+						</a>
+					</th>
+				</tr>
+			{% endfor %}
+		</table>
+	</div>
+{% endblock %}

@@ -1,0 +1,19 @@
+.tableheader {
+	background-color: #4480C1
+}
+
+.dark_row {
+	background-color: #B3BAC2
+}
+
+#succes_mess {
+	color: rgb(0, 255, 0);
+}
+
+#error_mess {
+	color: rgb(255, 0, 0);
+}
+
+.invisible_field {
+	display: none;
+}

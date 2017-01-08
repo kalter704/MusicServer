@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block main %}
+	<div>
+		<table>
+			<tr class="tableheader">
+				<th>Img</th>
+				<th>Title</th>
+				<th>Length</th>
+				<th>Play</th>
+			</tr>
+			{% for song in songs %}
+				<tr class="{% cycle '' 'dark_row' %}">
+					<th width="100px">
+						<a href="{% url 'change_song' song.id %}">
+							<img width="50px" src="/media/{{ song.album_img }}">
+						</a>
+					</th> 
+					<th width="300px">
+						<a href="{% url 'change_song' song.id %}">
+							{{ song.title }}
+						</a>
+					</th> 
+					<th width="300px">
+						<a href="{% url 'change_song' song.id %}">
+							{{ song.length|time:"i:s" }}
+						</a>
+					</th>
+					<th width="100px">
+						<a href="/media/{{ song.song_file }}">
+							Play
+						</a>
+					</th>
+				</tr>
+			{% endfor %}
+		</table>
+	</div>
+{% endblock %}

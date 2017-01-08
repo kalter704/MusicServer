@@ -17,6 +17,7 @@
 		-->
 		<!-- <link href='http://fonts.googleapis.com/css?family=Indie+Flower' rel='stylesheet' type='text/css'> -->
 		<!-- <script src="bootstrap/js/bootstrap.min.js"></script> -->
+		<link href="/static/style.css" rel="stylesheet">
 	</head>
 	<body>
 		<div>
@@ -30,6 +31,9 @@
 					<div><a href="">Вход</a></div>
 					<div><a href="">Регистрация</a></div>
 				{% endif %}
+					<br/>
+					<div><a href="{% url 'index' %}">На главную</a></div>
+					<br/>
 			</div> 
 		</div>
 		<div>
