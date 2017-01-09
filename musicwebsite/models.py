@@ -26,11 +26,13 @@ class Song(models.Model):
 	)
 	title = models.CharField(max_length = 20)
 	#auto_now = True
-	length = models.TimeField(null = True)
+	#length = models.TimeField(null = True)
+	length = models.IntegerField(default = -1)
 	song_file = models.FileField(upload_to = 'songs/', null = True)
-	album_img_title = models.CharField(max_length = 30)
+	#album_img_title = models.CharField(max_length = 30)
 	#album_img = models.ImageField(upload_to = "album_img/", null = True)
-	pos = models.IntegerField()
+	pos = models.IntegerField(default = 0)
+	expansion = models.CharField(max_length = 5)
 
 	def __unicode__(self):
 		return (str(self.id) + ' ' + self.title)

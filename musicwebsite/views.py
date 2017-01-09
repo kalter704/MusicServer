@@ -9,6 +9,7 @@ from forms import FormPlayList, FormSong
 from check_fields import isEmptyFields
 from datetime import datetime
 from work_with_img import save_img
+from mutagen.mp3 import MP3
 
 def index(request):
 	return render(request, 'index.html')
@@ -60,7 +61,7 @@ def add_song(request):
 		title = request.POST.get('title')
 		playList = request.POST.get('playList')
 		songFile = request.POST.get('songFile')
-		albumImg = request.POST.get('albumImg')
+		albumImg = request.FILES.get('albumImg')
 		if isEmptyFields(title, playList, songFile, albumImg):
 			form = FormSong(initial = {'title': title, 'playList': playList})
 			form.fields['playList'].choices = choices
@@ -70,14 +71,38 @@ def add_song(request):
 			}
 			return render(request, 'addSong.html', context)
 		else:
-			save_img(title, request.FILES.get('albumImg'))
+			### !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+			playListObj = PlayList.objects.get(title = playList)
+			songObj = Song(title = title, song_file = request.FILES.get('songFile'))
+			songObj.playList = playListObj
+			img_name = albumImg.name
+			if img_name.endswith(".jpg"):
+				songObj.expansion = "jpg"
+			elif img_name.endswith(".jpeg"):
+				songObj.expansion = "jpeg"
+			elif img_name.endswith(".png"):
+				songObj.expansion = "png"
+
+			songObj.save()
+			playListObj.update_playlist.last_update = int(datetime.now().strftime("%y%m%d%H%M%S"))
+			playListObj.update_playlist.save()
+			print("song_file = " + str(songObj.song_file))
+			print("albumImg = " + str(albumImg.name))
+			save_img(songObj.id, title, albumImg.name, albumImg)
+			audio = MP3(MEDIA_ROOT + "/" + str(songObj.song_file))
+			print("audio length = " + str(audio.info.length))
+			songObj.length = int(audio.info.length)
+			ssss = Song.objects.filter(playList = playListObj).order_by("-pos")[:1]
+			songObj.pos = ssss[0].pos + 1
+			'''
+			audio = MP3("example.mp3")
+			print audio.info.length
+			'''
+			songObj.save()
 			context = {
 				'form': form,
 				'add_successful': True
 			}
-			#
-			# Надо добавить логику сохранения!!!
-			#
 			return redirect('/addsong/')
 	return render(request, 'addSong.html', { 'form': form })
 
@@ -146,13 +171,11 @@ def playSong(request):
     return response
 
 def clear_database(request):
-	'''
 	playLists = PlayList.objects.all()
 	for playList in playLists:
 		playList.delete()
 	songs = Song.objects.all()
 	for song in songs:
 		song.delete()
-	return HttpResponse("Clear")
-	'''
-	return HttpResponse(MEDIA_ROOT)
+	return HttpResponse("Clear")	
+	#return HttpResponse(MEDIA_ROOT)

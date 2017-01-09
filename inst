@@ -1,0 +1,14 @@
+Install Pillow for img
+
+sudo apt-get install libjpeg62-dev
+sudo apt-get install zlib1g-dev
+sudo apt-get install libfreetype6-dev
+sudo apt-get install liblcms2-dev
+
+pip install Pillow
+
+-------------------------------------
+
+Install Mutagen for mp3
+
+sudo apt-get install python-mutagen

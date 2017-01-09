@@ -35,12 +35,12 @@
 			<br>
 			-->
 			<div>
-				<label>{{ form.songFile.label }}</label> 
+				<label>{{ form.songFile.label }} (*.mp3)</label> 
 				<div>{{ form.songFile }}</div>
 			</div>
 			<br>
 			<div>
-				<label>{{ form.albumImg.label }}</label> 
+				<label>{{ form.albumImg.label }} (*.jpg/png)</label> 
 				<div>{{ form.albumImg }}</div>
 			</div>
 			<br>
@@ -66,14 +66,10 @@
 	var XXHDPI_WIDTH = MDPI_WIDTH * 3
 	var XXXHDPI_WIDTH = MDPI_WIDTH * 4	
 
-	function checkSongURL(input) {
-
-	}
-
 	function checkImgURL(input) {
 		var type   = ['image/bmp','image/gif','image/jpg','image/jpeg','image/png'];
-		var width  = 192;
-		var height = 192;
+		var width  = XXXHDPI_WIDTH;
+		var height = XXXHDPI_WIDTH;
 		var file   = input.files[0];
 		var img_prev_xxxhdpi = document.getElementById('img_prev_xxxhdpi');
 		var img_prev_xxhdpi  = document.getElementById('img_prev_xxhdpi');
@@ -86,6 +82,7 @@
 			input.value = '';
 		}
 		if (type.indexOf(file.type) == -1) {
+			input.value = '';
 			errMsg('Не правильный формат!');
 			return false;
 		} else {
@@ -149,6 +146,24 @@
 					}
 				};
 			};
+		}
+	}
+
+	function checkSongURL(input) {
+		var type   = ['audio/mp3'];
+		var file   = input.files[0];
+		function errMsg(x) {
+			alert('Error ' + x);
+			prev.src = '';
+			input.value = '';
+		}
+		if (type.indexOf(file.type) == -1) {
+			input.value = '';
+			errMsg('Не правильный формат!');
+			input.value = '';
+			return false;
+		} else {
+
 		}
 	}
 </script>
