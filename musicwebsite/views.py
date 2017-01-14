@@ -6,7 +6,7 @@ from django.http import HttpResponse
 from wsgiref.util import FileWrapper
 from models import PlayList, Song, UdpatePlayList
 from forms import FormPlayList, FormSong
-from check_fields import isEmptyFields
+from func import isEmptyFields, removeBlankSpaceInList, insertSongToPos
 from datetime import datetime
 from work_with_img import save_img
 from mutagen.mp3 import MP3
@@ -19,13 +19,14 @@ def show_playlists(request):
 	return render(request, 'showPlayLists.html', { 'playLists': playLists })
 
 def show_songs(request, playlist_id):
-	songs = Song.objects.filter(playList__id = playlist_id)
+	#print("qwqqqqqqqqqqqqqq")
+	songs = Song.objects.filter(playList__id = playlist_id).order_by('pos')
 	'''
 	print('!!!!!!!!!!!!!!!!!!!!!!!!!!')
 	print(songs)
 	print('!!!!!!!!!!!!!!!!!!!!!!!!!!')
 	'''
-	return render(request, 'showSongs.html', { 'songs': songs })
+	return render(request, 'showSongs.html', { 'songs': songs, 'playList': PlayList.objects.get(pk = playlist_id).title })
 
 def add_playlist(request):
 	form = FormPlayList
@@ -60,8 +61,13 @@ def add_song(request):
 	if request.POST:
 		title = request.POST.get('title')
 		playList = request.POST.get('playList')
-		songFile = request.POST.get('songFile')
+		songFile = request.FILES.get('songFile')
 		albumImg = request.FILES.get('albumImg')
+		print(title)
+		print(playList)
+		print("songFile = " + str(songFile))
+		print(str(albumImg))
+		print(albumImg)
 		if isEmptyFields(title, playList, songFile, albumImg):
 			form = FormSong(initial = {'title': title, 'playList': playList})
 			form.fields['playList'].choices = choices
@@ -91,7 +97,7 @@ def add_song(request):
 			save_img(songObj.id, title, albumImg.name, albumImg)
 			audio = MP3(MEDIA_ROOT + "/" + str(songObj.song_file))
 			print("audio length = " + str(audio.info.length))
-			songObj.length = int(audio.info.length)
+			songObj.length = int(round(audio.info.length))
 			ssss = Song.objects.filter(playList = playListObj).order_by("-pos")[:1]
 			songObj.pos = ssss[0].pos + 1
 			'''
@@ -110,6 +116,7 @@ def change_playlist(request, playlist_id):
 	playList = PlayList.objects.get(pk = playlist_id)
 	form = FormPlayList(initial={'title': playList.title})
 	if request.POST:
+		#print("request.POST")
 		if request.POST.has_key('btn_save'):
 			title = request.POST.get('title')
 			#print("title = " + title)
@@ -140,7 +147,67 @@ def change_playlist(request, playlist_id):
 
 
 def change_song(request, song_id):
-	return HttpResponse("Hello, world!!!")
+	song = Song.objects.get(pk = song_id)
+	playLists = PlayList.objects.all()
+	choices = [('', '')]
+	for playList in playLists:
+		choices.append([playList.title, playList.title])
+	form = FormSong(initial={'title': song.title, 'pos': song.pos})
+	form.fields['playList'].choices = choices
+	if request.POST:
+		####---------------------
+		if request.POST.has_key('btn_save'):
+			title = request.POST.get('title')
+			pos = request.POST.get('pos')
+			playListTitle = request.POST.get('playList')
+			songFile = request.FILES.get('songFile')
+			albumImg = request.FILES.get('albumImg')
+			#print(songFile)
+			if isEmptyFields(title, pos, playListTitle):
+				context = {
+					'form': form,
+					'is_empty_field': True,
+					'song': song,
+				}
+				return render(request, 'changeSong.html', context)
+			else:
+				if song.playList.title != playListTitle:
+					#old_pos = song.pos
+					print("song.pos = " + str(song.pos))
+					print("song.playList.id = " + str(song.playList.id))
+					removeBlankSpaceInList(song.pos, song.playList.id)
+					p = PlayList.objects.get(title = playListTitle)
+					song.playList = p
+					ssss = Song.objects.filter(playList = p).order_by("-pos")[:1]
+					print(ssss)
+					if len(ssss) != 0:
+						song.pos = ssss[0].pos + 1
+					else:
+						song.pos = 1
+				elif song.pos != pos:
+					insertSongToPos(song, int(pos))
+				#playList.title = title
+				#playList.update_playlist.last_update = int(datetime.now().strftime("%y%m%d%H%M%S"))
+				#playList.save()
+				#playList.update_playlist.save()
+				#form = FormPlayList(initial={'title': playList.title})
+				song.save()
+				form = FormSong(initial={'title': song.title, 'pos': song.pos})
+				form.fields['playList'].choices = choices
+				context = {
+					'form': form,
+					'add_successful': True,
+					'song': song
+				}
+				return render(request, 'changeSong.html', context)
+		elif request.POST.has_key('btn_delete'):
+			#playList.delete()
+			return redirect('/showsongs/' + str(song.playList.id) + '/')
+		elif request.POST.has_key('btn_back'):
+			print("btn_back")
+			return redirect('/showsongs/' + str(song.playList.id) + '/')
+		####---------------------
+	return render(request, 'changeSong.html', { 'form': form, 'song': song })
 
 def getSongs(request):
 	playLists = PlayList.objects.all()
@@ -160,7 +227,7 @@ def getSongs(request):
 	'''
 
 def playSong(request):
-    song = Song.objects.get(pk = 1)
+    song = Song.objects.all()[0]
     # song is an object which has a FileField name file
     filepath = os.path.join(MEDIA_ROOT, str(song.song_file))#.replace('\\', '/')
     wrapper = FileWrapper(file(filepath))

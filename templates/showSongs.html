@@ -6,9 +6,11 @@
 			<tr class="tableheader">
 				<th>Img</th>
 				<th>Title</th>
+				<th>Position</th>
 				<th>Length</th>
 				<th>Play</th>
 			</tr>
+			<h2>Плейлист: {{ playList }}</h2>
 			{% for song in songs %}
 				<tr class="{% cycle '' 'dark_row' %}">
 					<th width="100px">
@@ -21,7 +23,12 @@
 							{{ song.title }}
 						</a>
 					</th> 
-					<th width="300px">
+					<th width="100px">
+						<a href="{% url 'change_song' song.id %}">
+							{{ song.pos }}
+						</a>
+					</th>
+					<th width="100px">
 						<a href="{% url 'change_song' song.id %}">
 							{{ song.length }}
 						</a>
