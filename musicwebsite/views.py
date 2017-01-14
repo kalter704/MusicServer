@@ -1,15 +1,16 @@
 # -*- coding: utf-8 -*-
 import os
+import time
 from MusicServer.settings import MEDIA_ROOT
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from wsgiref.util import FileWrapper
 from models import PlayList, Song, UdpatePlayList
 from forms import FormPlayList, FormSong
-from func import isEmptyFields, removeBlankSpaceInList, insertSongToPos
+from func import isEmptyFields, removeBlankSpaceInList, insertSongToPos, saveImg, renameImg, deleteImg
 from datetime import datetime
-from work_with_img import save_img
 from mutagen.mp3 import MP3
+
 
 def index(request):
 	return render(request, 'index.html')
@@ -65,7 +66,7 @@ def add_song(request):
 		albumImg = request.FILES.get('albumImg')
 		print(title)
 		print(playList)
-		print("songFile = " + str(songFile))
+		#print("songFile = " + str(songFile))
 		print(str(albumImg))
 		print(albumImg)
 		if isEmptyFields(title, playList, songFile, albumImg):
@@ -92,18 +93,14 @@ def add_song(request):
 			songObj.save()
 			playListObj.update_playlist.last_update = int(datetime.now().strftime("%y%m%d%H%M%S"))
 			playListObj.update_playlist.save()
-			print("song_file = " + str(songObj.song_file))
-			print("albumImg = " + str(albumImg.name))
-			save_img(songObj.id, title, albumImg.name, albumImg)
+			#print("song_file = " + str(songObj.song_file))
+			#print("albumImg = " + str(albumImg.name))
+			saveImg(songObj.id, title, albumImg.name, albumImg)
 			audio = MP3(MEDIA_ROOT + "/" + str(songObj.song_file))
-			print("audio length = " + str(audio.info.length))
+			#print("audio length = " + str(audio.info.length))
 			songObj.length = int(round(audio.info.length))
 			ssss = Song.objects.filter(playList = playListObj).order_by("-pos")[:1]
 			songObj.pos = ssss[0].pos + 1
-			'''
-			audio = MP3("example.mp3")
-			print audio.info.length
-			'''
 			songObj.save()
 			context = {
 				'form': form,
@@ -171,10 +168,18 @@ def change_song(request, song_id):
 				}
 				return render(request, 'changeSong.html', context)
 			else:
+				if not isEmptyFields(songFile):
+					os.remove(MEDIA_ROOT + '/' + str(song.song_file))
+					#print("path: " + MEDIA_ROOT + '/' + str(song.song_file))
+					song.song_file = songFile
+					#audio = MP3(songFile)
+					#time.sleep(5)
+					#audio = MP3(MEDIA_ROOT + "/" + str(song.song_file))
+					#song.length = int(round(audio.info.length))
 				if song.playList.title != playListTitle:
 					#old_pos = song.pos
-					print("song.pos = " + str(song.pos))
-					print("song.playList.id = " + str(song.playList.id))
+					#print("song.pos = " + str(song.pos))
+					#print("song.playList.id = " + str(song.playList.id))
 					removeBlankSpaceInList(song.pos, song.playList.id)
 					p = PlayList.objects.get(title = playListTitle)
 					song.playList = p
@@ -186,12 +191,33 @@ def change_song(request, song_id):
 						song.pos = 1
 				elif song.pos != pos:
 					insertSongToPos(song, int(pos))
+
+				if song.title != title:
+					renameImg(song.id, song.title, title, song.expansion)
+					song.title = title
+				if not isEmptyFields(albumImg):
+					#deleteImg(song.id, song.title, albumImg.name)
+					if albumImg.name.endswith(".jpg"):
+						expansion_temp = "jpg"
+					elif albumImg.name.endswith(".jpeg"):
+						expansion_temp = "jpeg"
+					elif albumImg.name.endswith(".png"):
+						expansion_temp = "png"
+					if song.expansion != expansion_temp:
+						deleteImg(song.id, song.title, song.expansion)
+						song.expansion = expansion_temp
+					saveImg(song.id, song.title, albumImg.name, albumImg)
+				if not isEmptyFields(songFile):
+					audio = MP3(MEDIA_ROOT + "/" + str(song.song_file))
+					song.length = int(round(audio.info.length))
 				#playList.title = title
 				#playList.update_playlist.last_update = int(datetime.now().strftime("%y%m%d%H%M%S"))
 				#playList.save()
 				#playList.update_playlist.save()
 				#form = FormPlayList(initial={'title': playList.title})
 				song.save()
+				song.playList.update_playlist.last_update = int(datetime.now().strftime("%y%m%d%H%M%S"))
+				song.playList.update_playlist.save()
 				form = FormSong(initial={'title': song.title, 'pos': song.pos})
 				form.fields['playList'].choices = choices
 				context = {
@@ -202,6 +228,14 @@ def change_song(request, song_id):
 				return render(request, 'changeSong.html', context)
 		elif request.POST.has_key('btn_delete'):
 			#playList.delete()
+			song.playList.update_playlist.last_update = int(datetime.now().strftime("%y%m%d%H%M%S"))
+			song.playList.update_playlist.save()
+			deleteImg(song.id, song.title, song.expansion)
+			path = os.path.join(MEDIA_ROOT, str(song.song_file))
+			removeBlankSpaceInList(song.pos, song.playList.id)
+			#print("path: " + str(path))
+			os.remove(path)
+			song.delete()
 			return redirect('/showsongs/' + str(song.playList.id) + '/')
 		elif request.POST.has_key('btn_back'):
 			print("btn_back")
