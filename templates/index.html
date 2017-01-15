@@ -3,7 +3,7 @@
 {% block main %}
 	<div>
 		<br>
-		<div><a href="{% url 'show_playlists' %}">Все альбомы</a></div>
+		<div><a href="{% url 'show_playlists' %}">Все плейлисты</a></div>
 		<br>
 		<div class="" id="line">
 			<hr>
@@ -11,6 +11,12 @@
 		<br>
 		<div><a href="{% url 'add_playlist' %}">Добавить плейлист</a></div>
 		<div><a href="{% url 'add_song' %}">Добавить песню</a></div>
+		<br>
+		<div class="" id="line">
+			<hr>
+		</div>
+		<br>
+		<div><a href="{% url 'show_new_users' %}">Новые пользователи</a></div>
 		<br>
 	</div>
 {% endblock %}

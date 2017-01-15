@@ -25,11 +25,11 @@
 				{% if user.is_authenticated %}
 					<div>
 						<div> {{ user }} </div>
-						<div><a href="">Выход</a></div>
+						<div><a href="{% url 'log_out' %}">Выход</a></div>
 					</div>
 				{% else %}
-					<div><a href="">Вход</a></div>
-					<div><a href="">Регистрация</a></div>
+					<!--<div><a href="">Вход</a></div>-->
+					<!--<div><a href="{% url 'registration' %}">Регистрация</a></div>-->
 				{% endif %}
 					<br/>
 					<div><a href="{% url 'index' %}">На главную</a></div>

@@ -2,38 +2,40 @@
 
 {% block main %}
 	<div>
+		<h2>Плейлист: {{ playList }}</h2>
+		<div><a href="{% url 'add_song' %}">Добавить песню</a></div>
+		<br>
 		<table>
 			<tr class="tableheader">
-				<th>Img</th>
-				<th>Title</th>
-				<th>Position</th>
-				<th>Length</th>
-				<th>Play</th>
+				<th width="100px">Img</th>
+				<th width="300px">Title</th>
+				<th width="100px">Position</th>
+				<th width="100px">Length</th>
+				<th width="100px">Play</th>
 			</tr>
-			<h2>Плейлист: {{ playList }}</h2>
 			{% for song in songs %}
 				<tr class="{% cycle '' 'dark_row' %}">
-					<th width="100px">
+					<th>
 						<a href="{% url 'change_song' song.id %}">
 							<img width="50px" src="/media/album_img/{{ song.id }}_{{ song.title }}hdpi.{{ song.expansion }}">
 						</a>
 					</th> 
-					<th width="300px">
+					<th>
 						<a href="{% url 'change_song' song.id %}">
 							{{ song.title }}
 						</a>
 					</th> 
-					<th width="100px">
+					<th>
 						<a href="{% url 'change_song' song.id %}">
 							{{ song.pos }}
 						</a>
 					</th>
-					<th width="100px">
+					<th>
 						<a href="{% url 'change_song' song.id %}">
 							{{ song.length }}
 						</a>
 					</th>
-					<th width="100px">
+					<th>
 						<a href="/media/{{ song.song_file }}">
 							Play
 						</a>

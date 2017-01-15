@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title> Music Service </title>
+		<link href="/static/style.css" rel="stylesheet">
+	</head>
+	<body style="background: #f8f8f8;">
+		<div>
+			{% if not user.is_authenticated %}
+				<div class="center_form" style="padding: 15px 0;">
+					<h1 style="margin: 0 0 10px 20px;">Регистрация</h1>
+					<hr>
+					{% if is_empty_field %}
+						<div id="error_mess" style="margin-left: 20px;">
+							Заполните все поля
+						</div>
+					{% endif %}
+					{% if is_not_match_pass %}
+						<div id="error_mess" style="margin-left: 20px;">
+							Пароли не совпадают
+						</div>
+					{% endif %}
+					{% if is_user_exist %}
+						<div id="error_mess" style="margin-left: 20px;">
+							Такой пользователь уже зарегистрирован
+						</div>
+					{% endif %}
+					<br>
+					{% if is_successfull %}
+						<div id="error_mess" style="margin-left: 20px;">
+							Ждите, когда администратор подтвердит регистрацию
+						</div>
+						<form action="{% url 'log_in' %}" method="get" enctype="multipart/form-data">
+							{% csrf_token %}
+							<br>
+							<div class="div_center">
+								<button type="submit" class="btn" style="width: 220px;">Войти</button>
+							</div>
+						</form>
+					{% else %}
+					<form action="{% url 'registration' %}" method="post" enctype="multipart/form-data">
+						{% csrf_token %}
+						<div class="div_center">
+							<label>{{ form.login.label }}</label> 
+							<div>{{ form.login }}</div>
+						</div>
+						<br>
+						<div class="div_center">
+							<label>{{ form.password.label }}</label> 
+							<div>{{ form.password }}</div>
+						</div>
+						<br>
+						<div class="div_center">
+							<label>{{ form.password2.label }}</label> 
+							<div>{{ form.password2 }}</div>
+						</div>
+						<br>
+						<div class="div_center">
+							<button type="submit" class="btn" style="width: 220px;">Зарегистрировать</button>
+						</div>
+					</form>
+					{% endif %}
+				</div>
+			{% endif %}
+		</div> 
+	</body>
+</html>

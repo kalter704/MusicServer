@@ -2,32 +2,34 @@
 
 {% block main %}
 	<div>
+		<h2>Плейлисты</h2> 
+		<div><a href="{% url 'add_playlist' %}">Добавить плейлист</a></div>
+		<br>
 		<table>
 			<tr class="tableheader">
-				<th>id</th>
-				<th>Title</th>
-				<th>Last Update</th>
-				<th>Change</th>
+				<th width="100px">id</th>
+				<th width="300px">Title</th>
+				<th width="300px">Last Update</th>
+				<th width="120px">Change</th>
 			</tr>
-			<h2>Плейлисты</h2>
 			{% for playlist in playLists %}
 				<tr class="{% cycle '' 'dark_row' %}">
-					<th width="100px">
+					<th>
 						<a href="{% url 'show_songs' playlist.id %}">
 							{{ playlist.id }}
 						</a>
 					</th> 
-					<th width="300px">
+					<th>
 						<a href="{% url 'show_songs' playlist.id %}">
 							{{ playlist.title }}
 						</a>
 					</th> 
-					<th width="300px">
+					<th>
 						<a href="{% url 'show_songs' playlist.id %}">
 							{{ playlist.update_playlist.last_update }}
 						</a>
 					</th>
-					<th width="120px">
+					<th>
 						<a href="{% url 'change_playlist' playlist.id %}">
 							Change
 						</a>

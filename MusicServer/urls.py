@@ -22,8 +22,8 @@ from django.conf.urls.static import static
 from django. conf import settings
 
 urlpatterns = [
-	url(r'^', include('musicwebsite.urls')),
     url(r'^admin/', admin.site.urls),
+	url(r'^', include('musicwebsite.urls')),
 ]
 
 if settings.DEBUG:

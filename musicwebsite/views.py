@@ -5,20 +5,25 @@ from MusicServer.settings import MEDIA_ROOT
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from wsgiref.util import FileWrapper
-from models import PlayList, Song, UdpatePlayList
-from forms import FormPlayList, FormSong
-from func import isEmptyFields, removeBlankSpaceInList, insertSongToPos, saveImg, renameImg, deleteImg
+from models import PlayList, Song, UdpatePlayList, NewUser
+from forms import FormPlayList, FormSong, FormRegisterUser, FormLogInUser
+from func import isEmptyFields, removeBlankSpaceInList, insertSongToPos, saveImg, renameImg, deleteImg, isExistUser
 from datetime import datetime
 from mutagen.mp3 import MP3
+from django.contrib import auth
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 
-
+@login_required
 def index(request):
 	return render(request, 'index.html')
 
+@login_required
 def show_playlists(request):
 	playLists = PlayList.objects.all()
 	return render(request, 'showPlayLists.html', { 'playLists': playLists })
 
+@login_required
 def show_songs(request, playlist_id):
 	#print("qwqqqqqqqqqqqqqq")
 	songs = Song.objects.filter(playList__id = playlist_id).order_by('pos')
@@ -29,6 +34,7 @@ def show_songs(request, playlist_id):
 	'''
 	return render(request, 'showSongs.html', { 'songs': songs, 'playList': PlayList.objects.get(pk = playlist_id).title })
 
+@login_required
 def add_playlist(request):
 	form = FormPlayList
 	if request.POST:
@@ -52,6 +58,7 @@ def add_playlist(request):
 			return redirect('/addplaylist/')
 	return render(request, 'addPlayList.html', { 'form': form })
 
+@login_required
 def add_song(request):
 	playLists = PlayList.objects.all()
 	choices = [('', '')]
@@ -109,6 +116,7 @@ def add_song(request):
 			return redirect('/addsong/')
 	return render(request, 'addSong.html', { 'form': form })
 
+@login_required
 def change_playlist(request, playlist_id):
 	playList = PlayList.objects.get(pk = playlist_id)
 	form = FormPlayList(initial={'title': playList.title})
@@ -142,7 +150,7 @@ def change_playlist(request, playlist_id):
 			return redirect('/showplaylists/')
 	return render(request, 'changePlayList.html', { 'form': form, 'playList': playList })
 
-
+@login_required
 def change_song(request, song_id):
 	song = Song.objects.get(pk = song_id)
 	playLists = PlayList.objects.all()
@@ -243,6 +251,104 @@ def change_song(request, song_id):
 		####---------------------
 	return render(request, 'changeSong.html', { 'form': form, 'song': song })
 
+def registration(request):
+	form = FormRegisterUser
+	if request.POST:
+		login = request.POST.get("login")
+		password = request.POST.get("password")
+		password2 = request.POST.get("password2")
+		if isEmptyFields(login, password, password2):
+			form = FormRegisterUser(initial={'login': login})
+			context = {
+				'form': form,
+				'is_empty_field': True,
+			}
+			return render(request, 'registration.html', context)
+		elif password != password2:
+			form = FormRegisterUser(initial={'login': login})
+			context = {
+				'form': form,
+				'is_not_match_pass': True,
+			}
+			return render(request, 'registration.html', context)
+		elif isExistUser(login):
+			form = FormRegisterUser(initial={'login': login})
+			context = {
+				'form': form,
+				'is_user_exist': True,
+			}
+			return render(request, 'registration.html', context)
+		else:
+			newUser = NewUser(name = login, password = password)
+			newUser.save()
+			context = {
+				'form': form,
+				'is_successfull': True,
+			}
+			return render(request, 'registration.html', context)
+	return render(request, 'registration.html', { 'form': form })
+
+def log_in(request):
+	form = FormLogInUser
+	if request.POST:
+		login = request.POST.get("login")
+		password = request.POST.get("password")
+		if isEmptyFields(login, password):
+			form = FormRegisterUser(initial={'login': login})
+			context = {
+				'form': form,
+				'is_empty_field': True,
+			}
+			return render(request, 'logIn.html', context)
+		else:
+			user = auth.authenticate(username = login, password = password)
+			if user is not None:
+				auth.login(request, user)
+				next_page = request.POST.get('next_page')
+				print(next_page)
+				if (next_page == None or next_page == ''):
+					return redirect('/')
+				else:
+					return redirect(next_page)
+			else:
+				form = FormRegisterUser(initial={'login': login})
+				context = {
+					'form': form,
+					'is_error_user': True,
+				}
+				return render(request, 'logIn.html', context)
+	return render(request, 'logIn.html', { 'form': form })
+
+def log_out(request):
+	auth.logout(request)
+	return redirect('/')
+
+@login_required
+def show_new_users(request):
+	newUsers = NewUser.objects.all()
+	return render(request, 'showNewUsers.html', { 'newUsers': newUsers })
+
+@login_required
+def add_new_user(request, newuser_id):
+	try:
+		newUser = NewUser.objects.get(pk = newuser_id)
+		user = User.objects.create_user(username = newUser.name, password = newUser.password)
+		user.save()
+		newUser.delete()
+	except:
+		print('Except')
+	return redirect('/shownewusers/')
+
+@login_required
+def delete_new_user(request, newuser_id):
+	try:
+		newUser = NewUser.objects.get(pk = newuser_id)
+		newUser.delete()
+	except:
+		print('Except')
+	return redirect('/shownewusers/')
+
+
 def getSongs(request):
 	playLists = PlayList.objects.all()
 	json = '{<br>'
@@ -278,5 +384,8 @@ def clear_database(request):
 	songs = Song.objects.all()
 	for song in songs:
 		song.delete()
+	newUsers = NewUser.objects.all()
+	for user in newUsers:
+		user.delete()
 	return HttpResponse("Clear")	
 	#return HttpResponse(MEDIA_ROOT)

@@ -17,3 +17,19 @@
 .invisible_field {
 	display: none;
 }
+
+.center_form {
+	width: 260px;
+	margin: 100px auto;
+	background: #FFFFFF;
+}
+
+.filds_width_center {
+	width: 216px;
+	margin: 0 auto;
+}
+
+.div_center {
+	width: 220px;
+	margin: 0 auto;
+}

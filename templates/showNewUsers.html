@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block main %}
+	<div>
+		<h2>Новые ползователи:</h2>
+		<table>
+			<tr class="tableheader">
+				<th  width="300px">Логин</th>
+				<th  width="100px">Добавить</th>
+				<th  width="100px">Удалить</th>
+			</tr>
+			{% for user in newUsers %}
+				<tr class="{% cycle '' 'dark_row' %}">
+					<th>
+						{{ user.name }}
+					</th>
+					<th>
+						<a href="{% url 'add_new_user' user.id %}">
+							Добавить
+						</a>
+					</th>
+					<th>
+						<a href="{% url 'delete_new_user' user.id %}">
+							Удалить
+						</a>
+					</th>
+				</tr>
+			{% endfor %}
+		</table>
+	</div>
+{% endblock %}

@@ -54,3 +54,13 @@ class UdpatePlayList(models.Model):
 
 	def __str__(self):
 		return (str(self.id) + '; ' + 'PlayList: ' + str(self.playList.title) + '; Last update: ' + str(self.last_update))
+
+class NewUser(models.Model):
+	name = models.CharField(max_length = 20)
+	password = models.CharField(max_length = 20)
+
+	def __unicode__(self):
+		return (str(self.id) + '; ' + 'Name: ' + self.name)
+
+	def __str__(self):
+		return (str(self.id) + '; ' + 'Name: ' + self.name)

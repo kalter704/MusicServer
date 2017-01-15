@@ -3,7 +3,8 @@ import os
 from MusicServer.settings import MEDIA_ROOT
 from PIL import Image
 from constants import *
-from models import PlayList, Song
+from models import PlayList, Song, NewUser
+from django.contrib.auth.models import User
 
 
 def isEmptyFields(*args):
@@ -11,6 +12,20 @@ def isEmptyFields(*args):
 		if a == '' or a == None:
 			return True
 	return False
+
+def isExistUser(name):
+	try:
+		u = User.objects.get(username = name)
+	except:
+		u = None
+	try:
+		nu = NewUser.objects.get(name = name)
+	except:
+		nu = None
+	if (u == None) and (nu == None):
+		return False
+	else:
+		return True
 
 def insertSongToPos(song, pos):
 	i = song.pos
