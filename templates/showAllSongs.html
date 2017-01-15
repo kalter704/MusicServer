@@ -2,14 +2,14 @@
 
 {% block main %}
 	<div>
-		<h2>Плейлист: {{ playList }}</h2>
 		<div><a href="{% url 'add_song' %}">Добавить песню</a></div>
 		<br>
 		<table>
 			<tr class="tableheader">
 				<th width="100px">Img</th>
 				<th width="300px">Title</th>
-				<th width="100px">Position</th>
+				<th width="200px">PlayList</th>
+				<th width="70px">Position</th>
 				<th width="100px">Length</th>
 				<th width="100px">Play</th>
 			</tr>
@@ -25,6 +25,11 @@
 							{{ song.title }}
 						</a>
 					</th> 
+					<th>
+						<a href="{% url 'change_song' song.id %}">
+							{{ song.playList.title }}
+						</a>
+					</th>
 					<th>
 						<a href="{% url 'change_song' song.id %}">
 							{{ song.pos }}

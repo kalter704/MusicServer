@@ -10,6 +10,7 @@ urlpatterns = [
     url(r'^changesong/(?P<song_id>[0-9]+)/', views.change_song, name = 'change_song'),
     url(r'^showplaylists/', views.show_playlists, name = 'show_playlists'),
     url(r'^showsongs/(?P<playlist_id>[0-9]+)/', views.show_songs, name = 'show_songs'),
+    url(r'^showallsongs/', views.show_all_songs, name = 'show_all_songs'),    
     url(r'^registration/', views.registration, name = 'registration'),
     url(r'^login/', views.log_in, name = 'log_in'),
     url(r'^logout/', views.log_out, name = 'log_out'),

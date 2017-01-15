@@ -25,14 +25,13 @@ def show_playlists(request):
 
 @login_required
 def show_songs(request, playlist_id):
-	#print("qwqqqqqqqqqqqqqq")
 	songs = Song.objects.filter(playList__id = playlist_id).order_by('pos')
-	'''
-	print('!!!!!!!!!!!!!!!!!!!!!!!!!!')
-	print(songs)
-	print('!!!!!!!!!!!!!!!!!!!!!!!!!!')
-	'''
 	return render(request, 'showSongs.html', { 'songs': songs, 'playList': PlayList.objects.get(pk = playlist_id).title })
+
+@login_required
+def show_all_songs(request):
+	songs = Song.objects.all().order_by('title')
+	return render(request, 'showAllSongs.html', { 'songs': songs })
 
 @login_required
 def add_playlist(request):
