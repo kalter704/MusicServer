@@ -23,6 +23,7 @@ from django. conf import settings
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
+    url(r'^musicapi/', include('musicapi.urls')),
 	url(r'^', include('musicwebsite.urls')),
 ]
 

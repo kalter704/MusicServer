@@ -6,7 +6,7 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from wsgiref.util import FileWrapper
 from models import PlayList, Song, UdpatePlayList, NewUser
-from forms import FormPlayList, FormSong, FormRegisterUser, FormLogInUser
+from forms import FormPlayList, FormSong, FormRegisterUser, FormLogInUser, FormSortBy
 from func import isEmptyFields, removeBlankSpaceInList, insertSongToPos, saveImg, renameImg, deleteImg, isExistUser
 from datetime import datetime
 from mutagen.mp3 import MP3
@@ -30,8 +30,49 @@ def show_songs(request, playlist_id):
 
 @login_required
 def show_all_songs(request):
-	songs = Song.objects.all().order_by('title')
-	return render(request, 'showAllSongs.html', { 'songs': songs })
+	form = FormSortBy(initial = {'objSort': 'Названию', 'ubVozr': 'Возрастанию'})
+	form.fields['objSort'].choices = [
+		('Названию','Названиию'), 
+		('Плейлисту', 'Плейлисту'),
+		('Длине', 'Длине')
+	] 
+	form.fields['ubVozr'].choices = [
+		('Возр','Возр'), 
+		('Убыв', 'Убыв')
+	]
+	sortBy = "title"
+	direction = ""
+	if request.POST:
+		#print("request == true")
+		objSortBy = request.POST.get("objSort")
+		ubVozr = request.POST.get("ubVozr")
+		#print("objSortBy = " + objSortBy)
+		if objSortBy == u"Названию":
+			#print("sortBy = title")
+			sortBy = "title"
+		elif objSortBy == u"Плейлисту":
+			#print("sortBy = playList__title")
+			sortBy = "playList__title"
+		elif objSortBy == u"Длине":
+			#print("sortBy = length")
+			sortBy = "length"
+		if ubVozr == u"Возр":
+			direction = ""
+		if ubVozr == u"Убыв":
+			direction = "-"
+		form = FormSortBy(initial = {'objSort': objSortBy, 'ubVozr': ubVozr})
+		form.fields['objSort'].choices = [
+			('Названию','Названиию'), 
+			('Плейлисту', 'Плейлисту'),
+			('Длине', 'Длине')
+		] 
+		form.fields['ubVozr'].choices = [
+			('Возр','Возр'), 
+			('Убыв', 'Убыв')
+		]
+	#print("direction + sortBy = " + direction + sortBy)
+	songs = Song.objects.all().order_by(direction + sortBy)
+	return render(request, 'showAllSongs.html', { 'form': form, 'songs': songs })
 
 @login_required
 def add_playlist(request):
@@ -157,7 +198,7 @@ def change_song(request, song_id):
 	for playList in playLists:
 		choices.append([playList.title, playList.title])
 	form = FormSong(initial={'title': song.title, 'pos': song.pos})
-	form.fields['playList'].choices = choices
+	form.fields['playList'].choices = choices 
 	if request.POST:
 		####---------------------
 		if request.POST.has_key('btn_save'):

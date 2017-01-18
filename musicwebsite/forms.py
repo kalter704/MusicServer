@@ -19,3 +19,7 @@ class FormRegisterUser(forms.Form):
 class FormLogInUser(forms.Form):
 	login = forms.CharField(label='Логин:', widget = forms.TextInput(attrs = {'class': 'form-control filds_width_center'}))
 	password = forms.CharField(label='Пароль:', widget = forms.PasswordInput(attrs = {'class': 'form-control filds_width_center'}))
+
+class FormSortBy(forms.Form):
+	 objSort= forms.ChoiceField(label = 'Сортировака по:', widget = forms.Select(attrs = {'class': 'form-control'}))
+	 ubVozr = forms.ChoiceField(label = 'Убыв/Возр:', widget = forms.Select(attrs = {'class': 'form-control'}))
