@@ -3,6 +3,8 @@ from django import forms
 
 class FormPlayList(forms.Form):
 	title = forms.CharField(label='Название плейлиста:', widget = forms.TextInput(attrs = {'class': 'form-control'}))
+	schoolOwner = forms.CharField(label='Название школы:', widget = forms.TextInput(attrs = {'class': 'form-control'}))
+	pos = forms.IntegerField(label = 'Позиция:', widget = forms.NumberInput(attrs = {'class': 'form-control'}))
 
 class FormSong(forms.Form):
 	playList = forms.ChoiceField(label = 'Плейлист:', widget = forms.Select(attrs = {'class': 'form-control'}))

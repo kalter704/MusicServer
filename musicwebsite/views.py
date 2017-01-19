@@ -7,7 +7,7 @@ from django.http import HttpResponse
 from wsgiref.util import FileWrapper
 from models import PlayList, Song, UdpatePlayList, NewUser
 from forms import FormPlayList, FormSong, FormRegisterUser, FormLogInUser, FormSortBy
-from func import isEmptyFields, removeBlankSpaceInList, insertSongToPos, saveImg, renameImg, deleteImg, isExistUser
+from func import isEmptyFields, removeBlankSpaceInList, insertSongToPos, saveImg, renameImg, deleteImg, isExistUser, insertPlaylistToPos
 from datetime import datetime
 from mutagen.mp3 import MP3
 from django.contrib import auth
@@ -20,7 +20,7 @@ def index(request):
 
 @login_required
 def show_playlists(request):
-	playLists = PlayList.objects.all()
+	playLists = PlayList.objects.all().order_by('pos')
 	return render(request, 'showPlayLists.html', { 'playLists': playLists })
 
 @login_required
@@ -79,7 +79,8 @@ def add_playlist(request):
 	form = FormPlayList
 	if request.POST:
 		playList = request.POST.get('title')
-		is_empty_field = isEmptyFields(playList)
+		schoolOwner = request.POST.get('schoolOwner')
+		is_empty_field = isEmptyFields(playList, schoolOwner)
 		if is_empty_field:
 			context = {
 				'form': form,
@@ -91,7 +92,12 @@ def add_playlist(request):
 				'form': form,
 				'add_successful': True
 			}
-			p = PlayList(title = playList)
+			lastPlayList = PlayList.objects.all().order_by('-pos')[:1]
+			if len(lastPlayList) != 0:
+				tempPos = lastPlayList[0].pos + 1
+			else:
+				tempPos = 1
+			p = PlayList(title = playList, schoolOwner = schoolOwner, pos = tempPos)
 			p.save()
 			ud = UdpatePlayList(last_update = int(datetime.now().strftime("%y%m%d%H%M%S")), playList = p) 
 			ud.save()
@@ -159,14 +165,16 @@ def add_song(request):
 @login_required
 def change_playlist(request, playlist_id):
 	playList = PlayList.objects.get(pk = playlist_id)
-	form = FormPlayList(initial={'title': playList.title})
+	form = FormPlayList(initial={'title': playList.title, 'schoolOwner': playList.schoolOwner, 'pos': playList.pos})
 	if request.POST:
 		#print("request.POST")
 		if request.POST.has_key('btn_save'):
 			title = request.POST.get('title')
+			schoolOwner = request.POST.get('schoolOwner')
+			pos = request.POST.get('pos')
 			#print("title = " + title)
 			#print("isEmptyFields(title) = " + str(isEmptyFields(title)))
-			if isEmptyFields(title):
+			if isEmptyFields(title, schoolOwner, pos):
 				context = {
 					'form': form,
 					'is_empty_field': True,
@@ -175,10 +183,14 @@ def change_playlist(request, playlist_id):
 				return render(request, 'changePlayList.html', context)
 			else:
 				playList.title = title
+				playList.schoolOwner = schoolOwner
+				#####!!!!!!!!!!!!!!!!!! Position
+				if pos != playList.pos:
+					insertPlaylistToPos(playList, int(pos))
 				playList.update_playlist.last_update = int(datetime.now().strftime("%y%m%d%H%M%S"))
 				playList.save()
 				playList.update_playlist.save()
-				form = FormPlayList(initial={'title': playList.title})
+				form = FormPlayList(initial={'title': playList.title, 'schoolOwner': playList.schoolOwner, 'pos': playList.pos})
 				context = {
 					'form': form,
 					'add_successful': True,
@@ -200,7 +212,6 @@ def change_song(request, song_id):
 	form = FormSong(initial={'title': song.title, 'pos': song.pos})
 	form.fields['playList'].choices = choices 
 	if request.POST:
-		####---------------------
 		if request.POST.has_key('btn_save'):
 			title = request.POST.get('title')
 			pos = request.POST.get('pos')
@@ -232,7 +243,7 @@ def change_song(request, song_id):
 					p = PlayList.objects.get(title = playListTitle)
 					song.playList = p
 					ssss = Song.objects.filter(playList = p).order_by("-pos")[:1]
-					print(ssss)
+					#print(ssss)
 					if len(ssss) != 0:
 						song.pos = ssss[0].pos + 1
 					else:
@@ -288,7 +299,6 @@ def change_song(request, song_id):
 		elif request.POST.has_key('btn_back'):
 			print("btn_back")
 			return redirect('/showsongs/' + str(song.playList.id) + '/')
-		####---------------------
 	return render(request, 'changeSong.html', { 'form': form, 'song': song })
 
 def registration(request):

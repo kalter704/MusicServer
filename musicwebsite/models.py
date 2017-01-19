@@ -7,6 +7,8 @@ from django.db import models
 
 class PlayList(models.Model):
 	title = models.CharField(max_length = 30)
+	pos = models.IntegerField(default = 0)
+	schoolOwner = models.CharField(max_length = 30)
 
 	def __unicode__(self):
 		return (str(self.id) + ' ' + self.title)

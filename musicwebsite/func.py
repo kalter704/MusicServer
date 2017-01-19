@@ -27,6 +27,50 @@ def isExistUser(name):
 	else:
 		return True
 
+def insertPlaylistToPos(playList, pos):
+	i = playList.pos
+	#playListId = playList.id
+	#print('i = ' + str(i))
+	#print('pos = ' + str(pos))
+	if i > pos:
+		isUp = True
+		i -= 1
+	else:
+		isUp = False
+		i += 1
+	#print('isUp = ' + str(isUp))
+	try:
+		p = PlayList.objects.get(pos = i)
+	except:
+		p = None
+	while (i != pos) and (p != None):
+		if isUp:
+			p.pos = i + 1
+			i -= 1
+		else:
+			p.pos = i - 1
+			i += 1
+		p.save()
+		try:
+			p = PlayList.objects.get(pos = i)
+		except:
+			p = None
+	#print(p)
+	if p == None:
+		if isUp:
+			i += 1
+		else:
+			i -= 1
+		pos = i
+	elif pos == i:
+		if isUp:
+			p.pos = i + 1
+		else:
+			p.pos = i - 1
+		p.save()
+	playList.pos = pos
+	#playList.save()
+
 def insertSongToPos(song, pos):
 	i = song.pos
 	playList_id = song.playList.id
@@ -76,7 +120,7 @@ def insertSongToPos(song, pos):
 		s.save()
 	#print("song.pos = pos = " + str(pos))	
 	song.pos = pos
-	song.save()
+	#song.save()
 
 def removeBlankSpaceInList(pos, playList_id):
 	pos += 1

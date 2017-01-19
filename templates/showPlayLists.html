@@ -9,7 +9,9 @@
 			<tr class="tableheader">
 				<th width="100px">id</th>
 				<th width="300px">Title</th>
-				<th width="300px">Last Update</th>
+				<th width="200px">School</th>
+				<th width="50px">Position</th>
+				<th width="150px">Last Update</th>
 				<th width="120px">Change</th>
 			</tr>
 			{% for playlist in playLists %}
@@ -24,6 +26,16 @@
 							{{ playlist.title }}
 						</a>
 					</th> 
+					<th>
+						<a href="{% url 'show_songs' playlist.id %}">
+							{{ playlist.schoolOwner }}
+						</a>
+					</th>
+					<th>
+						<a href="{% url 'show_songs' playlist.id %}">
+							{{ playlist.pos }}
+						</a>
+					</th>
 					<th>
 						<a href="{% url 'show_songs' playlist.id %}">
 							{{ playlist.update_playlist.last_update }}
