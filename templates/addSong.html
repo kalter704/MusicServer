@@ -34,6 +34,7 @@
 			<br>
 			<div>
 				<label>{{ form.albumImg.label }} (*.jpg/png)</label> 
+				<div id="img_size_mess">Минимальные рамеры картинки 960х960</div>
 				<div>{{ form.albumImg }}</div>
 			</div>
 			<br>
@@ -53,7 +54,7 @@
 	</div>
 
 <script>
-	var MDPI_WIDTH = 48
+	var MDPI_WIDTH = 240
 	var HDPI_WIDTH = MDPI_WIDTH * 1.5
 	var XHDPI_WIDTH = MDPI_WIDTH * 2
 	var XXHDPI_WIDTH = MDPI_WIDTH * 3
@@ -132,9 +133,9 @@
 
 						ctx.clearRect(0, 0, example.width, example.height);
 
-						//document.getElementById('img_size_mess').style.color='black';
+						document.getElementById('img_size_mess').style.color='black';
 					} else {
-						//document.getElementById('img_size_mess').style.color='red';
+						document.getElementById('img_size_mess').style.color='red';
 						input.value = '';
 					}
 				};
