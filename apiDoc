@@ -51,6 +51,7 @@
 		      "count":3,
 		      "songs":[{  
 		            "song_url":"/media/songs/Twenty_one_pilots__Before_You_Start_Your_Day.mp3",
+            		"singer":"gaer",
 		            "title":"Song1",
 		            "pos":1,
 		            "length":234,
@@ -58,6 +59,7 @@
 		            "id":215
 		         }, {  
 		            "song_url":"/media/songs/twenty_one_pilots__Cant_Help_Falling_In_Love.mp3",
+            		"singer":"gaer",
 		            "title":"Куллсонг",
 		            "pos":2,
 		            "length":177,
@@ -65,6 +67,7 @@
 		            "id":218
 		         }, {  
 		            "song_url":"/media/songs/twenty_one_pilots__Cant_Help_Falling_in_Love_ghXOfcV.mp3",
+            		"singer":"gaer",
 		            "title":"ПесняПесня123",
 		            "pos":3,
 		            "length":162,

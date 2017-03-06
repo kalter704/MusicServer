@@ -15,6 +15,7 @@
 			<tr class="tableheader">
 				<th width="100px">Img</th>
 				<th width="300px">Title</th>
+				<th width="200px">Singer</th>
 				<th width="200px">PlayList</th>
 				<th width="70px">Position</th>
 				<th width="100px">Length</th>
@@ -32,6 +33,11 @@
 							{{ song.title }}
 						</a>
 					</th> 
+					<th>
+						<a href="{% url 'change_song' song.id %}">
+							{{ song.singer }}
+						</a>
+					</th>
 					<th>
 						<a href="{% url 'change_song' song.id %}">
 							{{ song.playList.title }}

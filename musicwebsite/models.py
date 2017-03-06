@@ -35,6 +35,7 @@ class Song(models.Model):
 	#album_img = models.ImageField(upload_to = "album_img/", null = True)
 	pos = models.IntegerField(default = 0)
 	expansion = models.CharField(max_length = 5)
+	singer = models.CharField(max_length = 30, default = "")
 
 	def __unicode__(self):
 		return (str(self.id) + ' ' + self.title)

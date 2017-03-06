@@ -28,7 +28,7 @@ def getplaylists(request):
 				'playlists': playlistArray
 			}
 		}, 
-		ensure_ascii = False
+			ensure_ascii = False
 		))
 
 def getsongs(request):
@@ -52,6 +52,7 @@ def getsongs(request):
 					{
 						'id': s.id,
 						'title': s.title,
+						'singer': s.singer,
 						'length': s.length,
 						'pos': s.pos,
 						'img_url': img_url,
@@ -65,11 +66,13 @@ def getsongs(request):
 						'songs': songsArray
 					}
 				}, 
-				ensure_ascii = False
+					ensure_ascii = False
 				))
 	return HttpResponse(json.dumps(
 		{
 			'response': {
 				'error_code': 1
 			}
-		}))
+		}, 
+			ensure_ascii = False
+		))

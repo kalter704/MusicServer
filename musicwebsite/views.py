@@ -33,6 +33,7 @@ def show_all_songs(request):
 	form = FormSortBy(initial = {'objSort': 'Названию', 'ubVozr': 'Возрастанию'})
 	form.fields['objSort'].choices = [
 		('Названию','Названиию'), 
+		('Исполнителю', 'Исполнителю'),
 		('Плейлисту', 'Плейлисту'),
 		('Длине', 'Длине')
 	] 
@@ -50,6 +51,8 @@ def show_all_songs(request):
 		if objSortBy == u"Названию":
 			#print("sortBy = title")
 			sortBy = "title"
+		elif objSortBy == u"Исполнителю":
+			sortBy = "singer"
 		elif objSortBy == u"Плейлисту":
 			#print("sortBy = playList__title")
 			sortBy = "playList__title"
@@ -63,6 +66,7 @@ def show_all_songs(request):
 		form = FormSortBy(initial = {'objSort': objSortBy, 'ubVozr': ubVozr})
 		form.fields['objSort'].choices = [
 			('Названию','Названиию'), 
+			('Исполнителю', 'Исполнителю'),
 			('Плейлисту', 'Плейлисту'),
 			('Длине', 'Длине')
 		] 
@@ -114,16 +118,18 @@ def add_song(request):
 	form.fields['playList'].choices = choices
 	if request.POST:
 		title = request.POST.get('title')
+		singer = request.POST.get('singer')
 		playList = request.POST.get('playList')
 		songFile = request.FILES.get('songFile')
 		albumImg = request.FILES.get('albumImg')
 		print(title)
+		print(singer)
 		print(playList)
 		#print("songFile = " + str(songFile))
 		print(str(albumImg))
 		print(albumImg)
-		if isEmptyFields(title, playList, songFile, albumImg):
-			form = FormSong(initial = {'title': title, 'playList': playList})
+		if isEmptyFields(title, singer, playList, songFile, albumImg):
+			form = FormSong(initial = {'title': title, 'playList': playList, 'singer': singer})
 			form.fields['playList'].choices = choices
 			context = {
 				'form': form,
@@ -133,7 +139,7 @@ def add_song(request):
 		else:
 			### !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 			playListObj = PlayList.objects.get(title = playList)
-			songObj = Song(title = title, song_file = request.FILES.get('songFile'))
+			songObj = Song(title = title, singer = singer, song_file = request.FILES.get('songFile'))
 			songObj.playList = playListObj
 			img_name = albumImg.name
 			if img_name.endswith(".jpg"):
@@ -209,17 +215,18 @@ def change_song(request, song_id):
 	choices = [('', '')]
 	for playList in playLists:
 		choices.append([playList.title, playList.title])
-	form = FormSong(initial={'title': song.title, 'pos': song.pos})
+	form = FormSong(initial={'title': song.title, 'pos': song.pos, 'singer': song.singer})
 	form.fields['playList'].choices = choices 
 	if request.POST:
 		if request.POST.has_key('btn_save'):
 			title = request.POST.get('title')
+			singer = request.POST.get('singer')
 			pos = request.POST.get('pos')
 			playListTitle = request.POST.get('playList')
 			songFile = request.FILES.get('songFile')
 			albumImg = request.FILES.get('albumImg')
 			#print(songFile)
-			if isEmptyFields(title, pos, playListTitle):
+			if isEmptyFields(title, singer, pos, playListTitle):
 				context = {
 					'form': form,
 					'is_empty_field': True,
@@ -250,7 +257,6 @@ def change_song(request, song_id):
 						song.pos = 1
 				elif song.pos != pos:
 					insertSongToPos(song, int(pos))
-
 				if song.title != title:
 					renameImg(song.id, song.title, title, song.expansion)
 					song.title = title
@@ -269,6 +275,8 @@ def change_song(request, song_id):
 				if not isEmptyFields(songFile):
 					audio = MP3(MEDIA_ROOT + "/" + str(song.song_file))
 					song.length = int(round(audio.info.length))
+				if song.singer != singer:
+					song.singer = singer
 				#playList.title = title
 				#playList.update_playlist.last_update = int(datetime.now().strftime("%y%m%d%H%M%S"))
 				#playList.save()
@@ -277,7 +285,7 @@ def change_song(request, song_id):
 				song.save()
 				song.playList.update_playlist.last_update = int(datetime.now().strftime("%y%m%d%H%M%S"))
 				song.playList.update_playlist.save()
-				form = FormSong(initial={'title': song.title, 'pos': song.pos})
+				form = FormSong(initial={'title': song.title, 'pos': song.pos, 'singer': song.singer})
 				form.fields['playList'].choices = choices
 				context = {
 					'form': form,
@@ -397,7 +405,6 @@ def delete_new_user(request, newuser_id):
 	except:
 		print('Except')
 	return redirect('/shownewusers/')
-
 
 def getSongs(request):
 	playLists = PlayList.objects.all()
