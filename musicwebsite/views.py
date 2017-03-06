@@ -247,6 +247,8 @@ def change_song(request, song_id):
 					#print("song.pos = " + str(song.pos))
 					#print("song.playList.id = " + str(song.playList.id))
 					removeBlankSpaceInList(song.pos, song.playList.id)
+					song.playList.update_playlist.last_update = int(datetime.now().strftime("%y%m%d%H%M%S"))
+					song.playList.update_playlist.save()
 					p = PlayList.objects.get(title = playListTitle)
 					song.playList = p
 					ssss = Song.objects.filter(playList = p).order_by("-pos")[:1]
