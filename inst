@@ -11,4 +11,5 @@ pip install Pillow
 
 Install Mutagen for mp3
 
-sudo apt-get install python-mutagen
+# sudo apt-get install python-mutagen
+pip install mutagen
