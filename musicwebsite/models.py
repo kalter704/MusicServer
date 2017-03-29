@@ -6,9 +6,9 @@ from django.db import models
 # Create your models here.
 
 class PlayList(models.Model):
-	title = models.CharField(max_length = 30)
+	title = models.CharField(max_length = 50)
 	pos = models.IntegerField(default = 0)
-	schoolOwner = models.CharField(max_length = 30)
+	schoolOwner = models.CharField(max_length = 50)
 
 	def __unicode__(self):
 		return (str(self.id) + ' ' + self.title)
@@ -26,7 +26,7 @@ class Song(models.Model):
 		null = True,
 		related_name = 'songs'
 	)
-	title = models.CharField(max_length = 20)
+	title = models.CharField(max_length = 50)
 	#auto_now = True
 	#length = models.TimeField(null = True)
 	length = models.IntegerField(default = -1)
@@ -35,7 +35,7 @@ class Song(models.Model):
 	#album_img = models.ImageField(upload_to = "album_img/", null = True)
 	pos = models.IntegerField(default = 0)
 	expansion = models.CharField(max_length = 5)
-	singer = models.CharField(max_length = 30, default = "")
+	singer = models.CharField(max_length = 50, default = "")
 
 	def __unicode__(self):
 		return (str(self.id) + ' ' + self.title)
@@ -59,7 +59,7 @@ class UdpatePlayList(models.Model):
 		return (str(self.id) + '; ' + 'PlayList: ' + str(self.playList.title) + '; Last update: ' + str(self.last_update))
 
 class NewUser(models.Model):
-	name = models.CharField(max_length = 20)
+	name = models.CharField(max_length = 50)
 	password = models.CharField(max_length = 20)
 
 	def __unicode__(self):

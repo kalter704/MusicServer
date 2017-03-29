@@ -28,7 +28,7 @@ def getplaylists(request):
 				'playlists': playlistArray
 			}
 		}, 
-			ensure_ascii = False
+			ensure_ascii = True
 		))
 
 def getsongs(request):
@@ -66,7 +66,7 @@ def getsongs(request):
 						'songs': songsArray
 					}
 				}, 
-					ensure_ascii = False
+					ensure_ascii = True
 				))
 	return HttpResponse(json.dumps(
 		{
@@ -74,5 +74,5 @@ def getsongs(request):
 				'error_code': 1
 			}
 		}, 
-			ensure_ascii = False
+			ensure_ascii = True
 		))
