@@ -76,3 +76,4 @@ class Ads(models.Model):
 	state = models.IntegerField(default = -1)
 	# 1 - interstitial, 2 - banner
 	ad_type = models.IntegerField(default = -1)
+	url = models.CharField(max_length = 80, default = "")

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import json
 from django.shortcuts import render
 from django.http import HttpResponse
@@ -85,7 +84,8 @@ def getinterstitialads(request):
 		ad_img = MEDIA_URL + str(ad.img)
 		adsArray.append({
 			'name': ad.name,
-			'img': ad_img
+			'img': ad_img,
+			'url': ad.url
 			})
 		count += 1
 	return HttpResponse(json.dumps(

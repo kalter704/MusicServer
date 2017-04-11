@@ -11,6 +11,7 @@
 				<th width="300px">Title</th>
 				<th width="200px">Type</th>
 				<th width="100px">State</th>
+				<th width="100px">Link</th>
 				<th width="100px">Start</th>
 				<th width="100px">Stop</th>
 				<th width="100px">Delete</th>
@@ -36,6 +37,11 @@
 						{% else %} {% if ad.state == 2 %}
 							Остановлена
 						{% endif %}	{% endif %}
+					</th>
+					<th>
+						<a href="{{ ad.url }}">
+							Ссылка
+						</a>
 					</th>
 					<th>
 						<a href="{% url 'start_ad' ad.id %}">

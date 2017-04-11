@@ -32,4 +32,5 @@ class FormAd(forms.Form):
 	title = forms.CharField(label = 'Название рекламы:', widget = forms.TextInput(attrs = {'class': 'form-control'}))
 	img = forms.ImageField(label = 'Картинка:', widget = forms.ClearableFileInput(attrs = {'class': 'form-control'}))
 	ad_type = forms.CharField(label = 'Тип рекламы:', widget = forms.TextInput(attrs = {'class': 'form-control'}))
+	url = forms.CharField(label = 'Ссылка:', widget = forms.TextInput(attrs = {'class': 'form-control'}))
 	

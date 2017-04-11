@@ -191,7 +191,7 @@ def change_playlist(request, playlist_id):
 				playList.title = title
 				playList.schoolOwner = schoolOwner
 				#####!!!!!!!!!!!!!!!!!! Position
-				if pos != playList.pos:
+				if int(pos) != playList.pos:
 					insertPlaylistToPos(playList, int(pos))
 				playList.update_playlist.last_update = int(datetime.now().strftime("%y%m%d%H%M%S"))
 				playList.save()
@@ -474,8 +474,9 @@ def add_ad(request):
 		title = request.POST.get('title')
 		ad_type = request.POST.get('ad_type')
 		img = request.FILES.get('img')
-		if isEmptyFields(title, ad_type, img):
-			form = FormAd(initial = {'title': title, 'ad_type': ad_type})
+		url = request.POST.get('url')
+		if isEmptyFields(title, ad_type, img, url):
+			form = FormAd(initial = {'title': title, 'ad_type': ad_type, 'url': url})
 			context = {
 				'form': form,
 				'is_empty_field': True,
@@ -483,7 +484,7 @@ def add_ad(request):
 			return render(request, 'addAd.html', context)
 		else:
 			### !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-			newAd = Ads(name = title, img = img, state = 1, ad_type = ad_type)
+			newAd = Ads(name = title, img = img, state = 1, ad_type = ad_type, url = url)
 			newAd.save()
 			context = {
 				'form': form,
