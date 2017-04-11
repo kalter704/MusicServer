@@ -78,23 +78,20 @@ def getsongs(request):
 		))
 
 def getinterstitialads(request):
-	ads = Ads.objects.all()
+	ads = Ads.objects.filter(ad_type = 1).filter(state = 1)
 	adsArray = []
 	count = 0
 	for ad in ads:
-		if ad.ad_type == 1:
-			ad_img = MEDIA_URL + str(ad.img)
-			adsArray.append({
-				'name': ad.name,
-				'img': ad_img
-				})
-			count += 1
+		ad_img = MEDIA_URL + str(ad.img)
+		adsArray.append({
+			'name': ad.name,
+			'img': ad_img
+			})
+		count += 1
 	return HttpResponse(json.dumps(
 		{
-			'response': {
-				'count': count,
-				'ads': adsArray
-			}
+			'count': count,
+			'ads': adsArray
 		}, 
 			ensure_ascii = True
 		))
