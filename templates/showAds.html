@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block main %}
+	<div>
+		<h2>Плейлист: {{ playList }}</h2>
+		<div><a href="{% url 'add_ad' %}">Добавить рекламу</a></div>
+		<br>
+		<table>
+			<tr class="tableheader">
+				<th width="100px">Img</th>
+				<th width="300px">Title</th>
+				<th width="200px">Type</th>
+				<th width="100px">State</th>
+				<th width="100px">Start</th>
+				<th width="100px">Stop</th>
+				<th width="100px">Delete</th>
+			</tr>
+			{% for ad in ads %}
+				<tr class="{% cycle '' 'dark_row' %}">
+					<th>
+						<img width="50px" src="/media/{{ ad.img }}">
+					</th> 
+					<th>
+						{{ ad.name }}
+					</th> 
+					<th>
+						{% if ad.ad_type == 1 %}
+							Межстраничная
+						{% else %} {% if ad.ad_type == 2 %}
+							Баннер
+						{% endif %}	{% endif %}				
+					</th>
+					<th>
+						{% if ad.state == 1 %}
+							Работает
+						{% else %} {% if ad.state == 2 %}
+							Остановлена
+						{% endif %}	{% endif %}
+					</th>
+					<th>
+						<a href="{% url 'start_ad' ad.id %}">
+							Запустить
+						</a>
+					</th>
+					<th>
+						<a href="{% url 'stop_ad' ad.id %}">
+							Остановить
+						</a>
+					</th>
+					<th>
+						{% if ad.state == 2 %}
+							<a href="{% url 'delete_ad' ad.id %}">
+								Удалить
+							</a>
+						{% endif %}
+					</th>
+				</tr>
+			{% endfor %}
+		</table>
+	</div>
+{% endblock %}

@@ -5,8 +5,8 @@ from MusicServer.settings import MEDIA_ROOT
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from wsgiref.util import FileWrapper
-from models import PlayList, Song, UdpatePlayList, NewUser
-from forms import FormPlayList, FormSong, FormRegisterUser, FormLogInUser, FormSortBy
+from models import PlayList, Song, UdpatePlayList, NewUser, Ads
+from forms import FormPlayList, FormSong, FormRegisterUser, FormLogInUser, FormSortBy, FormAd
 from func import isEmptyFields, removeBlankSpaceInList, insertSongToPos, saveImg, renameImg, deleteImg, isExistUser, insertPlaylistToPos
 from datetime import datetime
 from mutagen.mp3 import MP3
@@ -436,7 +436,64 @@ def playSong(request):
     #print(response)
     return response
 
+def start_ad(request, ad_id):
+	try:
+		ad = Ads.objects.get(pk = ad_id)
+		ad.state = 1
+		ad.save()
+	except Exception as e:
+		print("start_ad ERROR")
+	return show_ads(request)
+
+def stop_ad(request, ad_id):
+	try:
+		ad = Ads.objects.get(pk = ad_id)
+		ad.state = 2
+		ad.save()
+	except Exception as e:
+		print("stop_ad ERROR")
+	return show_ads(request)
+
+def	delete_ad(request, ad_id):
+	try:
+		ad = Ads.objects.get(pk = ad_id)
+		path = os.path.join(MEDIA_ROOT, str(ad.img))
+		os.remove(path)
+		ad.delete()
+	except Exception as e:
+		print("delete_ad ERROR")
+	return show_ads(request)
+
+def show_ads(request):
+	ads = Ads.objects.all()
+	return render(request, 'showAds.html', { 'ads': ads });
+
+def add_ad(request):
+	form = FormAd
+	if request.POST:
+		title = request.POST.get('title')
+		ad_type = request.POST.get('ad_type')
+		img = request.FILES.get('img')
+		if isEmptyFields(title, ad_type, img):
+			form = FormAd(initial = {'title': title, 'ad_type': ad_type})
+			context = {
+				'form': form,
+				'is_empty_field': True,
+			}
+			return render(request, 'addAd.html', context)
+		else:
+			### !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+			newAd = Ads(name = title, img = img, state = 1, ad_type = ad_type)
+			newAd.save()
+			context = {
+				'form': form,
+				'add_successful': True
+			}
+			return render(request, 'addAd.html', context)
+	return render(request, 'addAd.html', { 'form': form });
+
 def clear_database(request):
+	'''
 	playLists = PlayList.objects.all()
 	for playList in playLists:
 		playList.delete()
@@ -447,4 +504,6 @@ def clear_database(request):
 	for user in newUsers:
 		user.delete()
 	return HttpResponse("Clear")	
+	'''
+	return HttpResponse('false')
 	#return HttpResponse(MEDIA_ROOT)

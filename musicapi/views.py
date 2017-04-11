@@ -2,7 +2,7 @@
 import json
 from django.shortcuts import render
 from django.http import HttpResponse
-from musicwebsite.models import PlayList, Song
+from musicwebsite.models import PlayList, Song, Ads
 from musicwebsite.func import isEmptyFields
 from MusicServer.settings import MEDIA_URL
 
@@ -72,6 +72,39 @@ def getsongs(request):
 		{
 			'response': {
 				'error_code': 1
+			}
+		}, 
+			ensure_ascii = True
+		))
+
+def getinterstitialads(request):
+	ads = Ads.objects.all()
+	adsArray = []
+	count = 0
+	for ad in ads:
+		if ad.ad_type == 1:
+			ad_img = MEDIA_URL + str(ad.img)
+			adsArray.append({
+				'name': ad.name,
+				'img': ad_img
+				})
+			count += 1
+	return HttpResponse(json.dumps(
+		{
+			'response': {
+				'count': count,
+				'ads': adsArray
+			}
+		}, 
+			ensure_ascii = True
+		))
+
+def gettestjson(request):
+	return HttpResponse(json.dumps(
+		{
+			'response': {
+				'count': "123",
+				'ads': "adsArray"
 			}
 		}, 
 			ensure_ascii = True

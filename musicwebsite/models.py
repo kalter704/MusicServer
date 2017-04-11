@@ -67,3 +67,12 @@ class NewUser(models.Model):
 
 	def __str__(self):
 		return (str(self.id) + '; ' + 'Name: ' + self.name)
+
+
+class Ads(models.Model):
+	name = models.CharField(max_length = 30)
+	img = models.ImageField(upload_to = 'ads/', null = True)
+	# 1 - show, 2 - not show
+	state = models.IntegerField(default = -1)
+	# 1 - interstitial, 2 - banner
+	ad_type = models.IntegerField(default = -1)

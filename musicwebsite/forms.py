@@ -26,3 +26,10 @@ class FormLogInUser(forms.Form):
 class FormSortBy(forms.Form):
 	 objSort= forms.ChoiceField(label = 'Сортировака по:', widget = forms.Select(attrs = {'class': 'form-control'}))
 	 ubVozr = forms.ChoiceField(label = 'Убыв/Возр:', widget = forms.Select(attrs = {'class': 'form-control'}))
+
+
+class FormAd(forms.Form):
+	title = forms.CharField(label = 'Название рекламы:', widget = forms.TextInput(attrs = {'class': 'form-control'}))
+	img = forms.ImageField(label = 'Картинка:', widget = forms.ClearableFileInput(attrs = {'class': 'form-control'}))
+	ad_type = forms.CharField(label = 'Тип рекламы:', widget = forms.TextInput(attrs = {'class': 'form-control'}))
+	

@@ -18,6 +18,12 @@ urlpatterns = [
     url(r'^addnewuser/(?P<newuser_id>[0-9]+)/', views.add_new_user, name = 'add_new_user'),
     url(r'^deletenewuser/(?P<newuser_id>[0-9]+)/', views.delete_new_user, name = 'delete_new_user'),
 
+    url(r'^showads/', views.show_ads, name = 'show_ads'),
+    url(r'^addad/', views.add_ad, name = 'add_ad'),
+    url(r'^startad/(?P<ad_id>[0-9]+)/', views.start_ad, name = 'start_ad'),
+    url(r'^stopad/(?P<ad_id>[0-9]+)/', views.stop_ad, name = 'stop_ad'),
+    url(r'^delete_ad/(?P<ad_id>[0-9]+)/', views.delete_ad, name = 'delete_ad'),
+
     url(r'^cleardatabase/', views.clear_database),
 
     url(r'^getjson/', views.getSongs),

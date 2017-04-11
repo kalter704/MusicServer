@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block main %}
+	<div>
+		<h1>Добавление</h1>
+		{% if add_successful %}
+			<div id="succes_mess">
+				Плейлист успешно добавлен
+			</div>
+		{% else %}
+			{% if is_empty_field %}
+				<div id="error_mess">
+					Заполните все поля
+				</div>
+			{% endif %}
+		{% endif %}
+		<br>
+		<form action="{% url 'add_ad' %}" method="post" enctype="multipart/form-data">
+			{% csrf_token %}
+			<div>
+				<label>{{ form.title.label }}</label> 
+				<div>{{ form.title }}</div>
+			</div>
+			<br>
+			<div>
+				<label>{{ form.ad_type.label }}</label> 
+				<div id="img_size_mess">1 - Межстраничная реклама</div>
+				<div id="img_size_mess">2 - Баннер</div>
+				<div>{{ form.ad_type }}</div>
+			</div>
+			<br>
+			<div>
+				<label>{{ form.img.label }} (*.jpg/png)</label> 
+				<div id="img_size_mess">Размер картинки 320х480</div>
+				<div id="img_size_mess">Обязательно: рамка толшиной в 1px</div>
+				<div>{{ form.img }}</div>
+			</div>
+			<br>
+			<div>
+				<button type="submit" class="btn" style="width: 220px;">Добавить</button>
+			</div>
+		</form>
+	</div>
+{% endblock %}
