@@ -257,7 +257,7 @@ def change_song(request, song_id):
 						song.pos = ssss[0].pos + 1
 					else:
 						song.pos = 1
-				elif song.pos != pos:
+				elif song.pos != int(pos):
 					insertSongToPos(song, int(pos))
 				if song.title != title:
 					renameImg(song.id, song.title, title, song.expansion)
