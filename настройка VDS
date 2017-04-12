@@ -1,0 +1,198 @@
+# Новая версия
+apt-get update
+apt-get install python2.7 nginx python-setuptools libjpeg62-dev zlib1g-dev libfreetype6-dev liblcms2-dev supervisor build-essential python-dev libmysqlclient-dev
+easy_install pip
+
+pip install virtualenv
+virtualenv /opt/musicserver_env   # musicserver_env можете заменить на любое другое имя
+cd /opt/musicserver_env
+source bin/activate
+# deactivate # для деактивации
+
+pip install django==1.9 gunicorn Pillow mutagen MySQL-python  # Для решения проблемы отсутствия MySqldb
+
+gunicorn MusicServer.wsgi:application --bind 194.87.102.161:8000 # проверка, ip свой
+
+git clone https://github.com/kalter704/MusicServer.git
+cd MusicServer/
+
+# настройка nginx
+cd /etc/nginx/sites-available/
+# см https://djbook.ru/examples/62/
+service nginx reload
+
+# Настройка supervisor см на сайте -> https://djbook.ru/examples/62/
+# после настройки надо выполнить
+service supervisor restart
+
+# Настройка автозапуска
+https://www.8host.com/blog/razrabotka-django-prilozheniya-na-postgresql-nginx-gunicorn-v-ubuntu-16-04/
+
+# Настройка MySql
+apt-get install mysql-server mysql-client
+
+mysql -u root -p
+create database musicserver_db character set utf8 collate utf8_general_ci; # musicserver_db - название БД
+grant all privileges on musicserver_db.* to musicuser@localhost identified by '741852'; # 741852 - пароль для пользователя musicuser
+mysql -u musicuser -h localhost -p musicserver_db # подключение к БД
+
+В файл /etc/rc.local, перед строкой “exit 0” добавляем:
+service supervisor start
+
+
+# В Django проекте надо настроить необходимые параметры для боевого сервера:
+DEBUG = False
+ALLOW_HOSTS = ['..']
+
+
+
+
+
+
+# Старая версия
+
+apt-get update 
+#apt-get upgrade # а зачем?
+
+apt-get install python2.7
+
+apt-get install nginx
+apt-get install python-setuptools
+easy_install pip
+
+pip install virtualenv
+virtualenv /opt/musicserver_env   # musicserver_env можете заменить на любое другое имя
+cd /opt/musicserver_env
+source bin/activate
+# deactivate # для деактивации
+pip install django==1.9
+pip install gunicorn
+
+git clone https://github.com/kalter704/MusicServer.git
+cd MusicServer/
+
+#Install Pillow for img
+sudo apt-get install libjpeg62-dev
+sudo apt-get install zlib1g-dev
+sudo apt-get install libfreetype6-dev
+sudo apt-get install liblcms2-dev
+pip install Pillow
+
+#Install Mutagen for mp3
+pip install mutagen
+
+gunicorn MusicServer.wsgi:application --bind 194.87.102.206:8000 # проверка
+
+# настройка nginx
+
+cd /etc/nginx/sites-available/
+# см https://djbook.ru/examples/62/
+service nginx reload
+
+# supervisor
+apt-get install supervisor
+
+# после настройки надо выполнить
+service supervisor restart
+
+# надо настроить автозапуск команды ##service supervisor restart
+https://programjutsu.wordpress.com/2010/06/23/%D0%B2%D1%8B%D0%BF%D0%BE%D0%BB%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5-%D0%BA%D0%BE%D0%BC%D0%B0%D0%BD%D0%B4-%D0%BF%D1%80%D0%B8-%D0%B7%D0%B0%D0%BF%D1%83%D1%81%D0%BA%D0%B5-ubuntu/
+
+
+# Настройка MySql
+apt-get install mysql-server mysql-client
+
+mysql -u root -p
+create database musicserver_db character set utf8 collate utf8_general_ci; # musicserver_db - название БД
+grant all privileges on musicserver_db.* to musicuser@localhost identified by '741852'; # 741852 - пароль для пользователя musicuser
+exit;
+mysql -u musicuser -h localhost -p musicserver_db # подключение к БД
+
+# Для решение проблемы отсутствия MySqldb
+apt-get install build-essential python-dev libmysqlclient-dev
+pip install MySQL-python
+
+В файл /etc/rc.local, перед строкой “exit 0” добавляем:
+service supervisor start
+
+# В Django проекте надо настроить необходимые параметры для боевого сервера:
+DEBUG = False
+ALLOW_HOSTS = ['..']
+
+
+
+
+
+
+# nginx конфиг
+
+  client_max_body_size 20m;
+  server {
+    listen 80;
+    server_name 194.87.102.206; #либо ip, либо доменное имя
+    access_log  /var/log/nginx/access.log;
+    error_log   /var/log/nginx/error.log;
+
+    location /static/ {
+        root /opt/musicserver_env/MusicServer/;
+        expires 30d;
+    }
+
+    location ~\.(jpg|png|gif)$ {
+        root /opt/musicserver_env/MusicServer/;
+    }
+
+    location ~\.(mp3)$ {
+        root /opt/musicserver_env/MusicServer/;
+    }
+
+    location / {
+        proxy_pass http://127.0.0.1:8000;
+        proxy_set_header Host $server_name;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    }
+  }
+
+
+
+# django setting.py DB:
+
+DEBUG = False
+
+ALLOWED_HOSTS = ['194.87.102.161']
+
+
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        #'NAME': '/var/www/db.sqlite3',
+        'NAME': 'musicserver_db',
+        'USER': 'musicuser',
+        'PASSWORD': '******',
+    }
+}
+
+
+
+STATIC_URL = '/static/'
+
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "static_dev"),
+]
+
+STATIC_ROOT = os.path.join(BASE_DIR, "static")
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/media/'
+
+LOGIN_URL = '/login/'
+
+
+
+
+
+
+
+
