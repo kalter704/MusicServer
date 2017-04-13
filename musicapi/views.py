@@ -96,6 +96,26 @@ def getinterstitialads(request):
 			ensure_ascii = True
 		))
 
+def getbannerads(request):
+	ads = Ads.objects.filter(ad_type = 2).filter(state = 1)
+	adsArray = []
+	count = 0
+	for ad in ads:
+		ad_img = MEDIA_URL + str(ad.img)
+		adsArray.append({
+			'name': ad.name,
+			'img': ad_img,
+			'url': ad.url
+			})
+		count += 1
+	return HttpResponse(json.dumps(
+		{
+			'count': count,
+			'ads': adsArray
+		}, 
+			ensure_ascii = True
+		))
+
 def gettestjson(request):
 	return HttpResponse(json.dumps(
 		{
