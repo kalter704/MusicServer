@@ -24,8 +24,8 @@ urlpatterns = [
     url(r'^stopad/(?P<ad_id>[0-9]+)/', views.stop_ad, name = 'stop_ad'),
     url(r'^delete_ad/(?P<ad_id>[0-9]+)/', views.delete_ad, name = 'delete_ad'),
 
-    url(r'^cleardatabase/', views.clear_database),
+    #url(r'^cleardatabase/', views.clear_database),
 
-    url(r'^getjson/', views.getSongs),
-    url(r'^play/', views.playSong),
+    #url(r'^getjson/', views.getSongs),
+    #url(r'^play/', views.playSong),
 ]

@@ -408,6 +408,7 @@ def delete_new_user(request, newuser_id):
 		print('Except')
 	return redirect('/shownewusers/')
 
+'''
 def getSongs(request):
 	playLists = PlayList.objects.all()
 	json = '{<br>'
@@ -416,25 +417,25 @@ def getSongs(request):
 			json += 'PlaiList: ' + playList.title + ' ' + MEDIA_ROOT + '/' + str(song.song_file) + '<br>'
 	json += '}'
 	return HttpResponse(json)
-	'''
+	# разделитель 
 	songs = Song.objects.all()
 	json = '{<br>'
 	for song in songs:
 		json += str(song.song_file) + '<br>'
 	json += '}'
 	return HttpResponse(json)
-	'''
+'''
 
+'''
 def playSong(request):
     song = Song.objects.all()[0]
-    # song is an object which has a FileField name file
-    filepath = os.path.join(MEDIA_ROOT, str(song.song_file))#.replace('\\', '/')
+    filepath = os.path.join(MEDIA_ROOT, str(song.song_file))
     wrapper = FileWrapper(file(filepath))
     response = HttpResponse(wrapper, content_type='audio/mpeg')
-    response['Content-Length'] = os.path.getsize(filepath)#.replace('/', '\\'))
+    response['Content-Length'] = os.path.getsize(filepath)
     response['Content-Disposition'] = 'attachment; filename=%s' % str(song.song_file)
-    #print(response)
     return response
+'''
 
 def start_ad(request, ad_id):
 	try:
@@ -493,7 +494,7 @@ def add_ad(request):
 			return render(request, 'addAd.html', context)
 	return render(request, 'addAd.html', { 'form': form });
 
-def clear_database(request):
+#def clear_database(request):
 	'''
 	playLists = PlayList.objects.all()
 	for playList in playLists:
@@ -506,5 +507,5 @@ def clear_database(request):
 		user.delete()
 	return HttpResponse("Clear")	
 	'''
-	return HttpResponse('false')
+	#return HttpResponse('false')
 	#return HttpResponse(MEDIA_ROOT)
