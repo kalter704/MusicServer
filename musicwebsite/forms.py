@@ -27,10 +27,13 @@ class FormSortBy(forms.Form):
 	 objSort= forms.ChoiceField(label = 'Сортировака по:', widget = forms.Select(attrs = {'class': 'form-control'}))
 	 ubVozr = forms.ChoiceField(label = 'Убыв/Возр:', widget = forms.Select(attrs = {'class': 'form-control'}))
 
-
 class FormAd(forms.Form):
 	title = forms.CharField(label = 'Название рекламы:', widget = forms.TextInput(attrs = {'class': 'form-control'}))
 	img = forms.ImageField(label = 'Картинка:', widget = forms.ClearableFileInput(attrs = {'class': 'form-control'}))
 	ad_type = forms.CharField(label = 'Тип рекламы:', widget = forms.TextInput(attrs = {'class': 'form-control'}))
 	url = forms.CharField(label = 'Ссылка:', widget = forms.TextInput(attrs = {'class': 'form-control'}))
+
+class FormMobAppVersion(forms.Form):
+	androidVersion = forms.IntegerField(label = 'Версия андроид приложения:', widget = forms.NumberInput(attrs = {'class': 'form-control'}))
+	iosVersion = forms.IntegerField(label = 'Версия ios приложения:', widget = forms.NumberInput(attrs = {'class': 'form-control'}))
 	

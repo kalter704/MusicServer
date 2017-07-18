@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block main %}
+	<div>
+		<h2>Ползователи:</h2>
+		<table>
+			<tr class="tableheader">
+				<th  width="300px">Логин</th>
+				<th  width="300px">Супер пользователь</th>
+				<th  width="300px">Сделать супер пользователем</th>
+			</tr>
+			{% for user in users %}
+				<tr class="{% cycle '' 'dark_row' %}">
+					<th>
+						{{ user.username }}
+					</th>
+					<th> 
+						{% if user.user_type.type == 1 %}
+						Да
+						{% else %}
+						Нет
+						{% endif %}
+					</th>
+					<th>
+						<a href="{% url 'add_superuser' user.id %}">
+							Добавить
+						</a>
+					</th>
+				</tr>
+			{% endfor %}
+		</table>
+	</div>
+{% endblock %}

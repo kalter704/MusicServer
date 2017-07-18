@@ -27,5 +27,32 @@
 		<br>
 			<div><a href="{% url 'show_ads' %}">Реклама</a></div>
 		<br>
+		{% if user.user_type.type == 1 %}
+		<div class="" id="line">
+			<hr>
+		</div>
+		<div class="" id="line">
+			<hr>
+		</div>
+		<br>
+			<div><a href="{% url 'show_users' %}">Все пользователи</a></div>
+		<br>
+		<div class="" id="line">
+			<hr>
+		</div>
+		<br>
+			<div><a href="{% url 'control_mob_app_version' %}">Управление версиями приложений</a></div>
+		<br>
+		<div class="" id="line">
+			<hr>
+		</div>
+		<br>
+		Управление бесплатной музыкой:
+		<br>
+		<br>
+		<div><a href="{% url 'show_free_playlists' %}">Все плейлисты</a></div>
+		<div><a href="{% url 'show_free_all_songs' %}">Все песни</a></div>
+		<br>
+		{% endif %}				
 	</div>
 {% endblock %}

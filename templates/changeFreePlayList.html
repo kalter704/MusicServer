@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block main %}
+	<div>
+		<h1>Изменение бесплатного плейлиста</h1>
+		{% if add_successful %}
+			<div id="succes_mess">
+				Плейлист успешно изменен
+			</div>
+		{% else %}
+			{% if is_empty_field %}
+				<div id="error_mess">
+					Заполните все поля
+				</div>
+			{% endif %}
+		{% endif %}
+		<br>
+		<form action="{% url 'change_free_playlist' playList.id %}" method="post" enctype="multipart/form-data">
+			{% csrf_token %}
+			<div>
+				<label>{{ form.title.label }}</label> 
+				<div>{{ form.title }}</div>
+			</div>
+			<br>
+			<div>
+				<label>{{ form.schoolOwner.label }}</label> 
+				<div>{{ form.schoolOwner }}</div>
+			</div>
+			<br>
+			<div>
+				<label>{{ form.pos.label }}</label> 
+				<div>{{ form.pos }}</div>
+			</div>
+			<br>
+			<div>
+				<div>
+					<button type="submit" class="btn" name="btn_save" style="width: 200px;">Сохранить</button>
+					<button type="submit" class="btn" name="btn_delete" style="width: 200px;">Удалить</button>
+					
+				</div>
+			</div>
+		</form>
+		<br>
+		<form action="{% url 'show_free_playlists' %}" method="get" enctype="multipart/form-data">
+			{% csrf_token %}
+				<div>
+					<button type="submit" class="btn" name="btn_save" style="width: 200px;">Назад</button>					
+				</div>
+		</form>
+	</div>
+{% endblock %}

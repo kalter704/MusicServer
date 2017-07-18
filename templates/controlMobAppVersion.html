@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block main %}
+	<div>
+		<h1>Изменение актуальгной версии приложений</h1>
+		<form action="{% url 'control_mob_app_version' %}" method="post" enctype="multipart/form-data">
+			{% csrf_token %}
+			<table>
+				<tr class="tableheader">
+					<th width="100px">ОС</th>
+					<th width="300px">Version</th>
+					<th width="200px">New version</th>
+				</tr>
+				<tr>
+					<th>
+						Android
+					</th>
+					<th>
+						{{ versions.android_app }}
+					</th>
+					<th>
+						{{ form.androidVersion }}
+					</th>
+				</tr>
+				<tr>
+					<th>
+						iOS
+					</th>
+					<th>
+						{{ versions.ios_app }}
+					</th>
+					<th>
+						{{ form.iosVersion }}
+					</th>
+				</tr>				
+			</table>
+			<div>
+				<div>
+					<button type="submit" class="btn" style="width: 220px;">Изменить</button>
+				</div>
+			</div>
+		</form>
+	</div>
+{% endblock %}

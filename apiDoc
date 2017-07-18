@@ -1,3 +1,100 @@
+Новое апи!
+/musicapi/v2/getplaylists/			- получение спика плейлистов
+	Параметры:
+		Обязательные:
+			"os=ios" - варианты "ios" V "android"
+			"v=2" - актуальная версия
+	Пример запроса:
+		/musicapi/v2/getplaylists/?os=ios&v=2
+	Пример ответа:
+	{  
+	   "response":{
+	   		"sounds":"main",        - варианты "main" V "free"
+	      	"count":3,
+	      	"playlists":[{  
+	            "pos":1,
+	            "last_update":170120104220,
+	            "school_owner":"School1",
+	            "id":68,
+	            "title":"Play1"
+	         }, {  
+	            "pos":2,
+	            "last_update":170120104319,
+	            "school_owner":"sch",
+	            "id":70,
+	            "title":"ManyMuch"
+	         }, {  
+	            "pos":3,
+	            "last_update":170120104243,
+	            "school_owner":"CoolSch",
+	            "id":69,
+	            "title":"SSong"
+	         }
+	      ]
+	   }
+	}
+
+	Поле last_update представлен в числовом виде:
+		170120104319 = 17 01 20 10 43 19 = 17 год, 01 месяц, 20 число, 10 часов, 43 минут, 19 секунд
+
+-------------------------------------------------------------------------
+/musicapi/v2/getsongs/				- получение списка песен
+	Параметры:
+		Обязательные:
+			"screen=xhdpi",
+			"sounds=free"           - варианты "main" V "free"
+		И один из:
+			- если "playlist_id=3", то отдается список песен в плейлисте
+			- если "song_id=1", то отдается песня по id
+			- если нет параметров, то отдается список всей песен
+
+	Пример запроса:
+		/musicapi/v2/getsongs/?screen=xhdpi&sounds=free&playlist_id=68
+
+	Ответ:
+		{  
+		   "response":{ 
+		   		"sounds":"free",
+		      	"count":3,
+		      	"songs":[{  
+		            "song_url":"/media/songs/Twenty_one_pilots__Before_You_Start_Your_Day.mp3",
+            		"singer":"gaer",
+		            "title":"Song1",
+		            "pos":1,
+		            "length":234,
+		            "img_url":"/media/album_img/215_Song1xhdpi.png",
+		            "id":215
+		         }, {  
+		            "song_url":"/media/songs/twenty_one_pilots__Cant_Help_Falling_In_Love.mp3",
+            		"singer":"gaer",
+		            "title":"Куллсонг",
+		            "pos":2,
+		            "length":177,
+		            "img_url":"/media/album_img/218_Куллсонгxhdpi.png",
+		            "id":218
+		         }, {  
+		            "song_url":"/media/songs/twenty_one_pilots__Cant_Help_Falling_in_Love_ghXOfcV.mp3",
+            		"singer":"gaer",
+		            "title":"ПесняПесня123",
+		            "pos":3,
+		            "length":162,
+		            "img_url":"/media/album_img/217_ПесняПесня123xhdpi.png",
+		            "id":217
+		         }
+		      ]
+		   }
+		}
+
+	Поле length 
+		length=177 секунд. 177сек = 2мин 57сек
+
+
+
+
+
+
+Старый вариант:
+
 -------------------------------------------------------------------------
 /musicapi/getplaylists/			- получение спика плейлистов
 

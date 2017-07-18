@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block main %}
+	<div>
+		<h2>Бесплатные плейлисты</h2> 
+		<div><a href="{% url 'add_free_playlist' %}">Добавить плейлист</a></div>
+		<br>
+		<table>
+			<tr class="tableheader">
+				<th width="100px">id</th>
+				<th width="300px">Title</th>
+				<th width="200px">School</th>
+				<th width="50px">Position</th>
+				<th width="150px">Last Update</th>
+				<th width="120px">Change</th>
+			</tr>
+			{% for playlist in playLists %}
+				<tr class="{% cycle '' 'dark_row' %}">
+					<th>
+						<a href="{% url 'show_free_songs' playlist.id %}">
+							{{ playlist.id }}
+						</a>
+					</th> 
+					<th>
+						<a href="{% url 'show_free_songs' playlist.id %}">
+							{{ playlist.title }}
+						</a>
+					</th> 
+					<th>
+						<a href="{% url 'show_free_songs' playlist.id %}">
+							{{ playlist.schoolOwner }}
+						</a>
+					</th>
+					<th>
+						<a href="{% url 'show_free_songs' playlist.id %}">
+							{{ playlist.pos }}
+						</a>
+					</th>
+					<th>
+						<a href="{% url 'show_free_songs' playlist.id %}">
+							{{ playlist.update_playlist.last_update }}
+						</a>
+					</th>
+					<th>
+						<a href="{% url 'change_free_playlist' playlist.id %}">
+							Change
+						</a>
+					</th>
+				</tr>
+			{% endfor %}
+		</table>
+	</div>
+{% endblock %}
