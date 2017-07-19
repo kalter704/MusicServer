@@ -519,7 +519,7 @@ def add_ad(request):
 def control_mob_app_version(request):
 	versions = MobAppVersion.objects.all()
 	if len(versions) == 0:
-		versions[0] = MobAppVersion(android_app = 0, ios_app = 0)
+		versions = [ MobAppVersion(android_app = 0, ios_app = 0) ]
 		versions[0].save()
 	form = FormMobAppVersion
 	if request.POST:
